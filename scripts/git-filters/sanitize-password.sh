@@ -1,5 +1,6 @@
 #!/bin/bash
-# clean filter: commit 时自动将密码、盐、JWT密钥替换为占位符
+# clean filter: git add 时自动将密码、盐、JWT密钥替换为占位符
+# 只影响暂存区（index），不修改本地工作区文件
 sed -E \
   -e 's/(spring\.datasource\.password[[:space:]]*=[[:space:]]*).*/\1YOUR_PASSWORD_HERE/' \
   -e 's/(app\.password\.salt[[:space:]]*=[[:space:]]*).*/\1YOUR_SALT_HERE/' \
