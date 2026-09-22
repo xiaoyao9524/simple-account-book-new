@@ -1,0 +1,68 @@
+.my {
+  padding-bottom: 58px;
+
+  .my-header {
+    margin-bottom: 0;
+    background: var(--theme-gradient);
+    padding: 0 0 20px;
+    border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+
+    .user-info {
+      cursor: pointer;
+      padding-top: 24px;
+
+      .avatar-wrapper {
+        margin: 0 auto 0;
+        width: 80px;
+        height: 80px;
+        border-radius: var(--radius-full);
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+        .avatar {
+          border-radius: var(--radius-full);
+        }
+      }
+
+      .user-detail {
+        .user-name {
+          margin: 12px 0 0;
+          text-align: center;
+          font-size: 22px;
+          line-height: 30px;
+          font-weight: 700;
+          color: #fff;
+        }
+      }
+    }
+
+    .account-info {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-around;
+
+      .info-item {
+        .info-title,
+        .info-number {
+          text-align: center;
+          font-size: 13px;
+          line-height: 18px;
+          color: rgba(255, 255, 255, 0.75);
+        }
+
+        .info-number {
+          margin-top: 4px;
+          font-size: 22px;
+          font-weight: 700;
+          color: #fff;
+        }
+      }
+    }
+  }
+
+  .my-list {
+    margin-top: 16px;
+  }
+}

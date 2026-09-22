@@ -1,0 +1,75 @@
+.bookkeeping {
+  padding: 82px 0 0;
+
+  .tabs {
+    position: fixed;
+    top: 45px;
+    z-index: 1;
+    padding: 0 16px 12px;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 400px;
+    background-color: var(--bg-card);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .icon-box {
+    margin-top: 16px;
+    padding: 0 12px;
+
+    .icon-list {
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: flex-start;
+
+      .icon-item {
+        box-sizing: border-box;
+        padding: 8px;
+        width: 86px;
+
+        .icon-container {
+          width: 70px;
+          height: 70px;
+          border-radius: var(--radius-lg);
+          background: var(--bg-card);
+          box-shadow: var(--shadow-sm);
+          transition: all var(--transition-bounce);
+
+          .icon {
+            display: block;
+            font-size: 28px;
+            text-align: center;
+            line-height: 70px;
+            color: var(--text-secondary);
+          }
+        }
+
+        .icon-title {
+          margin-top: 8px;
+          text-align: center;
+          font-size: 13px;
+          line-height: 18px;
+          color: var(--text-secondary);
+          transition: color var(--transition-fast);
+        }
+
+        &.active {
+          .icon-container {
+            background: var(--theme-gradient);
+            box-shadow: var(--shadow-theme);
+            transform: scale(1.05);
+
+            .icon {
+              color: #fff;
+            }
+          }
+
+          .icon-title {
+            color: var(--base-theme-color);
+            font-weight: 600;
+          }
+        }
+      }
+    }
+  }
+}

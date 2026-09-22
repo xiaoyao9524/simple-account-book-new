@@ -1,0 +1,145 @@
+:root {
+  --base-theme-color: #6366f1;
+  --theme-light: #818cf8;
+  --theme-lighter: #a5b4fc;
+  --theme-dark: #4f46e5;
+  --theme-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  --theme-gradient-light: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%);
+
+  --bg-page: #f5f5fa;
+  --bg-card: #ffffff;
+  --bg-input: #f9fafb;
+
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --text-tertiary: #94a3b8;
+
+  --color-income: #10b981;
+  --color-expense: #ef4444;
+
+  --border-color: #e2e8f0;
+  --border-light: #f1f5f9;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --shadow-theme: 0 4px 14px rgba(99, 102, 241, 0.25);
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 999px;
+
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.25s ease;
+  --transition-bounce: 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg-page);
+  font-family: -apple-system, "SF Pro Text", "PingFang SC", system-ui, "Segoe UI", Roboto, sans-serif;
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+ul, ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  text-decoration: none;
+  color: var(--text-primary);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+input, textarea {
+  border: none;
+  outline: none;
+  resize: none;
+  -webkit-appearance: none;
+  font-family: inherit;
+}
+
+img {
+  width: 100%;
+  height: 100%;
+  vertical-align: top;
+}
+
+p {
+  margin: 0;
+}
+
+.clearfix::before,
+.clearfix::after {
+  content: "";
+  display: block;
+  visibility: hidden;
+  line-height: 0;
+  clear: both;
+}
+
+.App {
+  min-width: 320px;
+  max-width: 400px;
+  padding: 0 0 58px 0;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+  background: var(--bg-page);
+  min-height: 100vh;
+}
+
+.App.is-ios {
+  padding-bottom: 88px;
+}
+
+* {
+  touch-action: pan-y;
+}
+
+.adm-button.adm-button-primary {
+  background: var(--theme-gradient);
+  border: none;
+  box-shadow: var(--shadow-theme);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.adm-button.adm-button-primary:active {
+  transform: scale(0.97);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
+}
+
+.adm-button.adm-button-primary:not(.adm-button-disabled):not(.adm-button-fill-outline) {
+  background: var(--theme-gradient);
+}
+
+.adm-button.adm-button-primary.adm-button-fill-outline {
+  background: transparent;
+  color: var(--base-theme-color);
+  border: 1.5px solid var(--base-theme-color);
+}
+
+.adm-button.adm-button-warning {
+  background: linear-gradient(135deg, #f97316 0%, #ef4444 100%);
+  border: none;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.25);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.adm-button.adm-button-warning:active {
+  transform: scale(0.97);
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.2);
+}
+
+.adm-button.adm-button-warning:not(.adm-button-disabled):not(.adm-button-fill-outline) {
+  background: linear-gradient(135deg, #f97316 0%, #ef4444 100%);
+}

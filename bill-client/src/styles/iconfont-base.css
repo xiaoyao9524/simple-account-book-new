@@ -1,0 +1,26 @@
+@font-face {
+  font-family: "iconfont-base";
+  src: url('./fonts/base/iconfont.eot');
+  src: url('./fonts/base/iconfont.eot#iefix') format('embedded-opentype'),
+    url('./fonts/base/iconfont.woff2') format('woff2'),
+    url('./fonts/base/iconfont.woff') format('woff'),
+    url('./fonts/base/iconfont.ttf') format('truetype'),
+    url('./fonts/base/iconfont.svg#iconfont') format('svg');
+}
+
+.iconfont-base {
+  font-family: "iconfont-base" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-sort:before { content: "\e606"; }
+.icon-minus:before { content: "\e65c"; }
+.icon-add:before { content: "\e657"; }
+.icon-shezhi:before { content: "\e611"; }
+.icon-down:before { content: "\e662"; }
+.icon-wode:before { content: "\e631"; }
+.icon-plus:before { content: "\e610"; }
+.icon-mingxi:before { content: "\e68a"; }

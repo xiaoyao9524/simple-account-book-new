@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xy.simple_accountbook.bill.mapper.UserMapper">
+    <!--    查询userInfo给前端返回，不带password -->
+    <select id="findByUsername" parameterType="java.lang.String"
+            resultType="com.xy.simple_accountbook.bill.entity.UserEntity">
+        SELECT id, username, avatar
+        FROM user
+        WHERE username = #{username}
+    </select>
+
+    <!--    查询userInfo进行登录校验，带password -->
+    <select id="loginFindByUsername" parameterType="java.lang.String"
+            resultType="com.xy.simple_accountbook.bill.entity.UserEntity">
+        SELECT id, username, password
+        FROM user
+        WHERE username = #{username}
+    </select>
+
+    <insert id="register" parameterType="com.xy.simple_accountbook.bill.entity.UserEntity"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user (username, password, avatar, create_time, update_time)
+        VALUES (#{username}, #{password}, #{avatar}, #{createTime}, #{updateTime})
+    </insert>
+
+</mapper>

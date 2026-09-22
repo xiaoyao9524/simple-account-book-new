@@ -1,0 +1,65 @@
+{
+  "id": "2166901",
+  "name": "账本基础图标",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "12012085",
+      "name": "sort",
+      "font_class": "sort",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    },
+    {
+      "icon_id": "10427934",
+      "name": "minus",
+      "font_class": "minus",
+      "unicode": "e65c",
+      "unicode_decimal": 58972
+    },
+    {
+      "icon_id": "11684169",
+      "name": "Add tool_Add",
+      "font_class": "add",
+      "unicode": "e657",
+      "unicode_decimal": 58967
+    },
+    {
+      "icon_id": "10262050",
+      "name": "设 置",
+      "font_class": "shezhi",
+      "unicode": "e611",
+      "unicode_decimal": 58897
+    },
+    {
+      "icon_id": "151695",
+      "name": "down",
+      "font_class": "down",
+      "unicode": "e662",
+      "unicode_decimal": 58978
+    },
+    {
+      "icon_id": "887965",
+      "name": "我的 (2)",
+      "font_class": "wode",
+      "unicode": "e631",
+      "unicode_decimal": 58929
+    },
+    {
+      "icon_id": "970718",
+      "name": "plus",
+      "font_class": "plus",
+      "unicode": "e610",
+      "unicode_decimal": 58896
+    },
+    {
+      "icon_id": "8987348",
+      "name": "明细",
+      "font_class": "mingxi",
+      "unicode": "e68a",
+      "unicode_decimal": 59018
+    }
+  ]
+}

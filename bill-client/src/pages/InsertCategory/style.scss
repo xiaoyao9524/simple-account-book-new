@@ -1,0 +1,117 @@
+.insert-category {
+  padding-bottom: 48px;
+
+  .form-area {
+    position: fixed;
+    top: 45px;
+    left: 0;
+    width: 100%;
+    z-index: 5;
+    background: var(--bg-card);
+    padding: 12px 16px;
+    box-sizing: border-box;
+    box-shadow: var(--shadow-sm);
+
+    .input-row {
+      display: flex;
+      align-items: center;
+
+      .label {
+        flex: 0 0 auto;
+        width: 72px;
+        font-size: 15px;
+        font-weight: 500;
+        color: var(--text-primary);
+      }
+
+      .input {
+        flex: 1;
+        min-width: 0;
+        box-sizing: border-box;
+        border: 1.5px solid var(--border-color);
+        border-radius: var(--radius-sm);
+        padding: 8px 12px;
+        font-size: 16px;
+        outline: none;
+        background: var(--bg-input);
+        -webkit-appearance: none;
+        transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+
+        &:focus {
+          border-color: var(--base-theme-color);
+          box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+        }
+      }
+    }
+
+    .error {
+      padding: 6px 0 0;
+      color: var(--color-expense);
+      font-size: 12px;
+    }
+  }
+
+  .icon-list-wrapper {
+    padding: 100px 12px 48px 0;
+
+    .icon-list-item {
+      margin-bottom: 12px;
+
+      .icon-list-title {
+        padding: 10px 0 10px 12px;
+        margin: 0;
+        font-size: 16px;
+        font-weight: 500;
+        color: var(--text-primary);
+      }
+
+      .icon-list {
+        padding: 0 12px;
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: flex-start;
+        gap: 6px;
+
+        .icon-item {
+          padding: 4px;
+          margin: 4px;
+          text-align: center;
+          width: 64px;
+          height: 64px;
+          border-radius: var(--radius-lg);
+          background: var(--bg-card);
+          box-shadow: var(--shadow-sm);
+          transition: all var(--transition-bounce);
+
+          .icon {
+            font-size: 32px;
+            line-height: 64px;
+            color: var(--text-secondary);
+          }
+
+          &.active {
+            background: var(--theme-gradient);
+            box-shadow: var(--shadow-theme);
+            transform: scale(1.05);
+
+            .icon {
+              color: #fff;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .save-btn-wrapper {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    z-index: 5;
+    width: 100%;
+    background: var(--bg-card);
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.06);
+    padding: 10px 16px;
+    box-sizing: border-box;
+  }
+}

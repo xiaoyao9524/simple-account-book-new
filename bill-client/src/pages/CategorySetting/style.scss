@@ -1,0 +1,107 @@
+.category-setting {
+  padding: 102px 0 50px;
+
+  .tabs {
+    position: fixed;
+    left: 0;
+    top: 45px;
+    z-index: 5;
+    padding: 10px 16px;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 400px;
+    background: var(--bg-card);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .category-list-wrapper {
+    margin-bottom: 12px;
+    padding: 0 12px;
+
+    .more-title {
+      padding-left: 4px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-tertiary);
+    }
+
+    .current-category-list,
+    .more-category-list {
+      padding: 0 16px;
+      box-sizing: border-box;
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      margin-top: 8px;
+    }
+  }
+
+  .category-item {
+    display: flex;
+    padding: 8px 0;
+    align-items: center;
+    border-bottom: 1px solid var(--border-light);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .operation-icon-wrapper {
+      flex: 0 0 auto;
+      margin-right: 8px;
+
+      .icon {
+        font-size: 18px;
+        line-height: 32px;
+        color: var(--color-expense);
+      }
+    }
+
+    .category-icon-wrapper {
+      flex: 0 0 auto;
+      margin-right: 8px;
+
+      .icon {
+        font-size: 32px;
+        line-height: 34px;
+      }
+    }
+
+    .category-title {
+      flex: 1;
+      font-size: 17px;
+      line-height: 34px;
+      color: var(--text-primary);
+    }
+
+    .del-btn-wrapper {
+      flex: 0 0 auto;
+      padding-top: 2px;
+    }
+
+    .drag-sort-wrapper {
+      flex: 0 0 auto;
+      font-size: 20px;
+      line-height: 34px;
+      cursor: grab;
+      color: var(--text-tertiary);
+    }
+  }
+
+  .more-category-list .operation-icon-wrapper .icon {
+    color: var(--color-income);
+  }
+
+  .add-category-btn-wrapper {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 5;
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+    padding: 10px 16px;
+    background: var(--bg-card);
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.06);
+  }
+}

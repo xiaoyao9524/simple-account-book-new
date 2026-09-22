@@ -1,0 +1,38 @@
+package com.xy.simple_accountbook.bill.controller;
+
+import com.xy.simple_accountbook.bill.common.context.UserContext;
+import com.xy.simple_accountbook.bill.dto.request.user.UserLoginRequest;
+import com.xy.simple_accountbook.bill.dto.request.user.UserRegisterRequest;
+import com.xy.simple_accountbook.bill.entity.vo.BaseResponse;
+import com.xy.simple_accountbook.bill.entity.vo.UserVO;
+import com.xy.simple_accountbook.bill.service.UserService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class UserController {
+
+    @Autowired
+    private UserService userService;
+
+    @PostMapping("/user/register")
+    public BaseResponse<UserVO> register(@Valid @RequestBody UserRegisterRequest request) {
+        UserVO userVO = userService.register(request);
+        return BaseResponse.success(userVO);
+    }
+
+    @PostMapping("/user/login")
+    public BaseResponse<String> login(@Valid @RequestBody UserLoginRequest request) {
+        String token = userService.login(request);
+        return BaseResponse.success(token);
+    }
+
+    @GetMapping("/user/test")
+    public BaseResponse<String> test() {
+        return BaseResponse.success("success, 当前用户：" + UserContext.getUsername());
+    }
+}
