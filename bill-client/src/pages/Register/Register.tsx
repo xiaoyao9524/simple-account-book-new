@@ -1,98 +1,63 @@
-import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
-import { Toast, Button } from 'antd-mobile';
-import { useStore } from '@/store/useStore';
-import { register as registerApi, getUserInfo } from '@/api/admin';
+import { useNavigate } from 'react-router';
+import { Form, Input, Toast, Button } from 'antd-mobile';
+import { register as registerApi } from '@/api/user';
 import type { SignupRequestProps } from '@/types/admin';
-import { useQuery } from '@/hooks/useQuery';
 import NavBar from '@/components/NavBar/NavBar';
 import './style.scss';
 
 export default function Register() {
+  interface RegisterFormData extends SignupRequestProps {
+    confirmPassword: string;
+  }
+
   const navigate = useNavigate();
-  const query = useQuery();
-  const setUserInfo = useStore((s) => s.setUserInfo);
 
-  const { register, handleSubmit, watch, formState: { errors } } = useForm<SignupRequestProps>();
-  const password = watch('password');
+  const [form] = Form.useForm()
 
-  async function handlerSignup(data: SignupRequestProps) {
-    try {
-      const res = await registerApi(data);
-      if (res.status === 200) {
-        Toast.show({ content: '注册成功', icon: 'success' });
-        requestUserInfo();
-      } else {
-        Toast.show({ content: res.message, icon: 'fail' });
-      }
-    } catch (err) {
-      Toast.show({ content: (err as Error).message, icon: 'fail' });
+  async function handlerSignup(formData: RegisterFormData) {
+    const data = {
+      username: formData.username,
+      password: formData.password
+    }
+
+    const res = await registerApi(data);
+
+    if (res) {
+      Toast.show({ content: '注册成功，请登录', icon: 'success' });
+
+      navigate('/login', { replace: true });
     }
   }
 
-  async function requestUserInfo() {
-    try {
-      const userInfoRes = await getUserInfo();
-      if (userInfoRes.status === 200) {
-        setUserInfo(userInfoRes.data);
-        navigate(decodeURIComponent(query.redirect) || '/', { replace: true });
-      } else {
-        Toast.show({ content: userInfoRes.message, icon: 'fail' });
-      }
-    } catch (err) {
-      Toast.show({ content: (err as Error).message, icon: 'fail' });
-    }
+  const checkConfirmPassword = (_: unknown, confirmPassword: string) => {
+    const password = form.getFieldValue('password');
+
+    return password === confirmPassword ? Promise.resolve() : Promise.reject(new Error('两次密码输入不一致!'));
   }
 
   return (
     <div className="register-wrapper">
       <NavBar>注册</NavBar>
-      <form className="register-form" onSubmit={handleSubmit(handlerSignup)}>
-        <div className="form-group">
-          <label className="label">用户名</label>
-          <input
-            className="input"
-            {...register('username', {
-              required: '必须输入用户名!',
-              minLength: { value: 2, message: '用户名至少需要2位!' },
-              pattern: { value: /^[^\d]\w{2,12}$/, message: '用户名格式不正确!' },
-            })}
-            placeholder="请输入用户名"
-          />
-          {errors.username && <p className="error">{errors.username.message}</p>}
-        </div>
-        <div className="form-group">
-          <label className="label">密码</label>
-          <input
-            type="password"
-            className="input"
-            {...register('password', {
-              required: '请输入密码',
-              minLength: { value: 6, message: '密码至少需要6位!' },
-            })}
-            placeholder="请输入密码"
-          />
-          {errors.password && <p className="error">{errors.password.message}</p>}
-        </div>
-        <div className="form-group">
-          <label className="label">确认密码</label>
-          <input
-            type="password"
-            className="input"
-            {...register('confirmPassword', {
-              required: '请再次输入密码',
-              validate: (val) => val === password || '两次密码输入不一致!',
-            })}
-            placeholder="请再次输入密码"
-          />
-          {errors.confirmPassword && <p className="error">{errors.confirmPassword.message}</p>}
-        </div>
-        <div className="btn-row">
-          <Button block color="primary" type="submit">
-            注册
+      <Form
+        form={form}
+        name='form'
+        onFinish={handlerSignup}
+        footer={
+          <Button block type='submit' color='primary' size='large'>
+            提交
           </Button>
-        </div>
-      </form>
+        }
+      >
+        <Form.Item name='username' label='用户名' rules={[{ required: true, message: '请输入用户名' }, { type: 'string', min: 2, max: 8, message: '用户名长度为2-8个字符！' }, { pattern: /^[a-zA-Z\u4e00-\u9fa5][a-zA-Z0-9\u4e00-\u9fa5]{1,7}$/, message: '用户名必须以字母或汉字开头，只能包含字母、汉字、数字，长度2~8' }]}>
+          <Input placeholder="请输入用户名" />
+        </Form.Item>
+        <Form.Item name='password' label='密码' rules={[{ required: true, message: '请输入密码' }, { type: 'string', min: 8, max: 12, message: '密码长度为8-12个字符！' }]}>
+          <Input type="password" placeholder="请输入密码" />
+        </Form.Item>
+        <Form.Item name='confirmPassword' label='确认密码' rules={[{ required: true, message: '请再次输入密码' }, { validator: checkConfirmPassword }]}>
+          <Input type="password" placeholder="请再次输入密码" />
+        </Form.Item>
+      </Form>
     </div>
   );
 }

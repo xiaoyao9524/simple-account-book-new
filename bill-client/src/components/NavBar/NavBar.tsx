@@ -1,5 +1,5 @@
 import { NavBar as AntdNavBar } from 'antd-mobile';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 interface NavBarProps {
   children: React.ReactNode;

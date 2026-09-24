@@ -1,38 +1,29 @@
 import request from './request';
 import type {
   SignupRequestProps,
-  RegisterResponseProps,
   LoginRequestProps,
-  LoginResponseProps,
-  UserInfoResult,
+  LoginResponse,
   LogoutResponseProps,
 } from '@/types/admin';
 
 export const register = (data: SignupRequestProps) =>
-  request<RegisterResponseProps>({
+  request({
     method: 'post',
-    url: '/api/admin/register',
+    url: '/user/register',
     data,
   });
 
 export function login(data: LoginRequestProps) {
-  return request<LoginResponseProps>({
+  return request<LoginResponse>({
     method: 'post',
-    url: '/api/admin/login',
-    data,
-  });
-}
-
-export function getUserInfo() {
-  return request<UserInfoResult>({
-    method: 'post',
-    url: '/api/admin/getUserInfo',
+    url: '/user/login',
+    data
   });
 }
 
 export function logout() {
   return request<LogoutResponseProps>({
     method: 'post',
-    url: '/api/admin/logout',
+    url: '/admin/logout',
   });
 }

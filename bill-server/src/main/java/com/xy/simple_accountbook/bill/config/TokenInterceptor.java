@@ -1,8 +1,9 @@
 package com.xy.simple_accountbook.bill.config;
 
 import com.xy.simple_accountbook.bill.common.context.UserContext;
-import com.xy.simple_accountbook.bill.common.utils.JwtUtils;
+import com.xy.simple_accountbook.bill.entity.TokenEntity;
 import com.xy.simple_accountbook.bill.entity.vo.BaseResponse;
+import com.xy.simple_accountbook.bill.service.TokenService;
 import tools.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -10,17 +11,22 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
-public class JwtInterceptor implements HandlerInterceptor {
+public class TokenInterceptor implements HandlerInterceptor {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final JwtUtils jwtUtils;
+    private final TokenService tokenService;
 
-    public JwtInterceptor(JwtUtils jwtUtils) {
-        this.jwtUtils = jwtUtils;
+    public TokenInterceptor(TokenService tokenService) {
+        this.tokenService = tokenService;
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        // CORS 预检请求直接放行
+//        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+//            return true;
+//        }
+
         String token = request.getHeader("Authorization");
 
         if (token != null && token.startsWith("Bearer ")) {
@@ -32,16 +38,15 @@ public class JwtInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        try {
-            Long userId = jwtUtils.getUserId(token);
-            String username = jwtUtils.getUsername(token);
-            UserContext.setUserId(userId);
-            UserContext.setUsername(username);
-            return true;
-        } catch (Exception e) {
+        TokenEntity tokenEntity = tokenService.validateToken(token);
+        if (tokenEntity == null) {
             writeError(response, "登录已过期，请重新登录");
             return false;
         }
+
+        UserContext.setUserId(tokenEntity.getUserId());
+        UserContext.setUsername(tokenEntity.getUsername());
+        return true;
     }
 
     @Override

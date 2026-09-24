@@ -1,8 +1,8 @@
 import { create } from 'zustand';
-import type { UserInfo } from '@/types/user';
-import type { CategoryItem, CategoryItemWithSortIndex, UpdateCategoryResultData } from '@/types/category';
+import type { UserVO } from '@/types/user';
+// import type { CategoryItem, CategoryItemWithSortIndex, UpdateCategoryResultData } from '@/types/category';
 import { checkSystemInfo } from '@/utils/system';
-import { updateCurrentUserCategory } from '@/api/category';
+// import { updateCurrentUserCategory } from '@/api/category';
 
 interface SystemState {
   isMobile: boolean;
@@ -13,27 +13,22 @@ interface SystemState {
 
 interface StoreState {
   system: SystemState;
-  userInfo: UserInfo;
+  userInfo: UserVO;
   token: string;
   setSystemInfo: () => void;
   setTabBarShow: (show: boolean) => void;
   setToken: (token: string) => void;
-  setUserInfo: (userInfo: UserInfo) => void;
+  setUserInfo: (userInfo: UserVO) => void;
   loadUserDataFromLocal: () => void;
   setUserCategory: (category: UpdateCategoryResultData) => void;
   deleteUserCategory: (category: CategoryItem) => void;
   updateUserCategory: () => Promise<void>;
 }
 
-const defaultUserInfo: UserInfo = {
+const defaultUserInfo: UserVO = {
+  id: -1,
   username: '',
-  avatar: '',
-  bookkeepingDays: 0,
-  bookkeepCount: 0,
-  category: {
-    expenditureList: [],
-    incomeList: [],
-  },
+  avatar: ''
 };
 
 const defaultSystemState: SystemState = {

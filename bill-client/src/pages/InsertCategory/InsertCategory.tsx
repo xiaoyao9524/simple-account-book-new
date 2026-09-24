@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { Button, Toast } from 'antd-mobile';
 import { useStore } from '@/store/useStore';

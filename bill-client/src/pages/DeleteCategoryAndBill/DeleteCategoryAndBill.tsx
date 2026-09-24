@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { List, Button, Dialog, Toast } from 'antd-mobile';
 import { useStore } from '@/store/useStore';
 import { getBillListByCategoryId, deleteCategoryAndBill } from '@/api/category';
-import { useQuery } from '@/hooks/useQuery';
+import  useQuery  from '@/hooks/useQuery';
 import type { BillItem } from '@/types/bill';
 import './style.scss';
 

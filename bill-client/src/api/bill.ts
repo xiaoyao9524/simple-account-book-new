@@ -13,27 +13,27 @@ import type {
 export const getBillListByDate = (data: GetBillListByDateRequestProps) =>
   request<GetBillListByDateResponse>({
     method: 'post',
-    url: '/api/bill/getBillListByDate',
+    url: '/bill/getBillListByDate',
     data,
   });
 
 export const insertBill = (data: InsertBillProps) =>
   request<InsertBillResponse>({
     method: 'post',
-    url: '/api/bill/insertBill',
+    url: '/bill/insertBill',
     data,
   });
 
 export const deleteBill = (data: DeleteBillProps) =>
   request<DeleteBillResponse>({
     method: 'delete',
-    url: '/api/bill/deleteBill',
+    url: '/bill/deleteBill',
     data,
   });
 
 export const updateBill = (data: UpdateBillProps) =>
   request<UpdateBillResponse>({
     method: 'post',
-    url: '/api/bill/updateBill',
+    url: '/bill/updateBill',
     data,
   });

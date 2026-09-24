@@ -1,99 +1,62 @@
-import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
-import { Toast, Button } from 'antd-mobile';
-import { useStore } from '@/store/useStore';
-import { login, getUserInfo } from '@/api/admin';
+import { useNavigate } from 'react-router';
+import { Form, Input, Button } from 'antd-mobile';
+import useTokenStore from '@/store/useTokenStore';
+import useUserStore from '@/store/useUserStore';
+import useQuery from '@/hooks/useQuery';
+import { login } from '@/api/user';
 import type { LoginRequestProps } from '@/types/admin';
-import { useQuery } from '@/hooks/useQuery';
 import NavBar from '@/components/NavBar/NavBar';
 import './style.scss';
 
 export default function Login() {
   const navigate = useNavigate();
   const query = useQuery();
-  const setToken = useStore((s) => s.setToken);
-  const setUserInfo = useStore((s) => s.setUserInfo);
-
-  const { register, handleSubmit, formState: { errors } } = useForm<LoginRequestProps>();
-
-  useEffect(() => {
-    if (query.failMsg) {
-      Toast.show({ content: decodeURIComponent(query.failMsg), icon: 'fail' });
-    }
-  }, []);
+  const setToken = useTokenStore((state) => state.setToken);
+  const setUserInfo = useUserStore(state => state.setUserInfo);
+  const [form] = Form.useForm()
 
   async function handlerLogin(data: LoginRequestProps) {
-    try {
-      const loginRes = await login(data);
-      if (loginRes.status === 200) {
-        setToken(loginRes.data.token);
-        requestUserInfo();
-      } else {
-        Toast.show({ content: loginRes.message, icon: 'fail' });
-      }
-    } catch (err) {
-      Toast.show({ content: (err as Error).message, icon: 'fail' });
+    const loginRes = await login(data);
+
+    if (loginRes) {
+      setToken(loginRes.data.token);
+      setUserInfo(loginRes.data.userInfo);
+
+      navigate(query.redirect ? decodeURIComponent(query.redirect) : '/', { replace: true });
     }
   }
 
-  async function requestUserInfo() {
-    try {
-      const userInfoRes = await getUserInfo();
-      if (userInfoRes.status === 200) {
-        setUserInfo(userInfoRes.data);
-        navigate(query.redirect ? decodeURIComponent(query.redirect) : '/', { replace: true });
-      } else {
-        Toast.show({ content: userInfoRes.message, icon: 'fail' });
-      }
-    } catch (err) {
-      Toast.show({ content: (err as Error).message, icon: 'fail' });
-    }
+  const toRegister = () => {
+    navigate('/register');
   }
 
   return (
     <div className="login-wrapper">
       <NavBar>登录</NavBar>
-      <form className="login-form" onSubmit={handleSubmit(handlerLogin)}>
-        <div className="form-group">
-          <label className="label">用户名</label>
-          <input
-            className="input"
-            {...register('username', {
-              required: '必须输入用户名!',
-              minLength: { value: 2, message: '用户名至少需要2位!' },
-              pattern: { value: /^[^\d]\w{2,12}$/, message: '用户名格式不正确!' },
-            })}
-            placeholder="请输入用户名"
-          />
-          {errors.username && <p className="error">{errors.username.message}</p>}
-        </div>
-        <div className="form-group">
-          <label className="label">密码</label>
-          <input
-            type="password"
-            className="input"
-            {...register('password', {
-              required: '请输入密码',
-              minLength: { value: 6, message: '密码至少需要6位!' },
-            })}
-            placeholder="请输入密码"
-          />
-          {errors.password && <p className="error">{errors.password.message}</p>}
-        </div>
-        <div className="btn-row">
-          <Button block color="primary" type="submit">
-            登录
-          </Button>
-        </div>
-        <div className="register-link">
-          <a
-            onClick={() => navigate(`/register?redirect=${query.redirect || '/'}`)}
-          >
-            注册
-          </a>
-        </div>
-      </form>
+      <Form
+        form={form}
+        name='form'
+        onFinish={handlerLogin}
+        footer={
+          <>
+            <Button block type='submit' color='primary' size='large'>
+              提交
+            </Button>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 10 }}>
+              <Button fill='none' style={{ color: '#8b5cf6' }} onClick={toRegister}>
+                注册
+              </Button>
+            </div>
+          </>
+        }
+      >
+        <Form.Item name='username' label='用户名' rules={[{ required: true, message: '请输入用户名' }, { type: 'string', min: 2, max: 8, message: '用户名长度为2-8个字符！' }, { pattern: /^[a-zA-Z\u4e00-\u9fa5][a-zA-Z0-9\u4e00-\u9fa5]{1,7}$/, message: '用户名必须以字母或汉字开头，只能包含字母、汉字、数字，长度2~8' }]}>
+          <Input placeholder="请输入用户名" />
+        </Form.Item>
+        <Form.Item name='password' label='密码' rules={[{ required: true, message: '请输入密码' }, { type: 'string', min: 8, max: 12, message: '密码长度为8-12个字符！' }]}>
+          <Input type="password" placeholder="请输入密码" />
+        </Form.Item>
+      </Form>
     </div>
   );
 }

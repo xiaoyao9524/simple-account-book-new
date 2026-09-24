@@ -1,0 +1,93 @@
+@charset "UTF-8";
+.home .home-container {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 68px);
+}
+
+.home .home-container .head-container {
+  flex: 0 0 auto;
+  width: 100%;
+  padding: 20px 0 16px;
+  background: var(--theme-gradient);
+  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+}
+
+.home .home-container .head-container .header-list {
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.home .home-container .head-container .header-list .header-item {
+  flex: 1;
+}
+
+.home .home-container .head-container .header-list .header-item.date-item {
+  flex: 0 0 auto;
+  margin-right: 24px;
+  padding: 0 12px 0 0;
+  border-right: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.home .home-container .head-container .header-list .header-item.date-item .value {
+  padding-right: 0;
+  border-right: none;
+}
+
+.home .home-container .head-container .header-list .header-item .title {
+  font-size: 12px;
+  line-height: 18px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 2px;
+}
+
+.home .home-container .head-container .header-list .header-item .value {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 26px;
+  color: #fff;
+  letter-spacing: -0.5px;
+}
+
+.home .home-container .book-list-wrapper {
+  flex: 1;
+  margin-top: 12px;
+  padding: 0 12px 70px;
+  overflow-y: auto;
+  overflow: auto;
+  /* 必须，auto / scroll */
+  /* chrome、edge、safari */
+  /* firefox */
+  scrollbar-width: none;
+}
+
+.home .home-container .book-list-wrapper ::-webkit-scrollbar {
+  display: none;
+}
+
+.home .home-container .book-list-wrapper .bill-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 4px;
+}
+
+.home .home-container .book-list-wrapper .bill-item-header .date {
+  flex: 1;
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.home .home-container .book-list-wrapper .bill-item-header .price-total {
+  flex: 0 0 auto;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-income);
+}
+
+.home .home-container .book-list-wrapper .bill-item-header .price-total.minus {
+  color: var(--color-expense);
+}

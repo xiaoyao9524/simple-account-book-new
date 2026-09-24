@@ -1,6 +1,6 @@
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router';
 
-export function useQuery() {
+function useQuery() {
   const [searchParams] = useSearchParams();
   const query: Record<string, string> = {};
   searchParams.forEach((value, key) => {
@@ -8,3 +8,5 @@ export function useQuery() {
   });
   return query;
 }
+
+export default useQuery;

@@ -4,8 +4,10 @@ import com.xy.simple_accountbook.bill.common.context.UserContext;
 import com.xy.simple_accountbook.bill.dto.request.user.UserLoginRequest;
 import com.xy.simple_accountbook.bill.dto.request.user.UserRegisterRequest;
 import com.xy.simple_accountbook.bill.entity.vo.BaseResponse;
+import com.xy.simple_accountbook.bill.entity.vo.LoginVO;
 import com.xy.simple_accountbook.bill.entity.vo.UserVO;
 import com.xy.simple_accountbook.bill.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,9 +28,19 @@ public class UserController {
     }
 
     @PostMapping("/user/login")
-    public BaseResponse<String> login(@Valid @RequestBody UserLoginRequest request) {
-        String token = userService.login(request);
-        return BaseResponse.success(token);
+    public BaseResponse<LoginVO> login(@Valid @RequestBody UserLoginRequest request) {
+        LoginVO loginVO = userService.login(request);
+        return BaseResponse.success(loginVO);
+    }
+
+    @PostMapping("/user/logout")
+    public BaseResponse<Void> logout(HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+        userService.logout(token);
+        return BaseResponse.success(null);
     }
 
     @GetMapping("/user/test")

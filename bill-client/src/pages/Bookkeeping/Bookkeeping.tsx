@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router';
 import { Segmented, Toast } from 'antd-mobile';
 import { useStore } from '@/store/useStore';
 import NavBar from '@/components/NavBar/NavBar';

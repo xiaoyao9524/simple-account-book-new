@@ -1,5 +1,5 @@
 import { Button } from 'antd-mobile';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router';
 
 import './style.scss';
 

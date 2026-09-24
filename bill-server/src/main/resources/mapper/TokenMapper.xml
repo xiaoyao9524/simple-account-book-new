@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xy.simple_accountbook.bill.mapper.TokenMapper">
+
+    <insert id="insert" parameterType="com.xy.simple_accountbook.bill.entity.TokenEntity"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO user_token (token_hash, user_id, username, expire_time, create_time)
+        VALUES (#{tokenHash}, #{userId}, #{username}, #{expireTime}, #{createTime})
+    </insert>
+
+    <select id="findByTokenHash" parameterType="java.lang.String"
+            resultType="com.xy.simple_accountbook.bill.entity.TokenEntity">
+        SELECT id, token_hash AS tokenHash, user_id AS userId, username, expire_time AS expireTime, create_time AS createTime
+        FROM user_token
+        WHERE token_hash = #{tokenHash}
+    </select>
+
+    <delete id="deleteByTokenHash" parameterType="java.lang.String">
+        DELETE FROM user_token WHERE token_hash = #{tokenHash}
+    </delete>
+
+    <delete id="deleteExpiredTokens">
+        DELETE FROM user_token WHERE expire_time &lt; NOW()
+    </delete>
+
+</mapper>

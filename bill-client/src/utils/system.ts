@@ -1,4 +1,6 @@
-export const checkSystemInfo = () => {
+import type { SystemInfo } from '@/types/system'
+
+export const checkSystemInfo = (): SystemInfo => {
   const u = navigator.userAgent;
   const isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1;
   const isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);

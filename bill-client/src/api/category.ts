@@ -18,60 +18,60 @@ import type {
 export const getAllCategoryList = () =>
   request<GetAllCategoryListResult>({
     method: 'post',
-    url: '/api/category/getAllCategoryList',
+    url: '/category/getAllCategoryList',
   });
 
 export const insertCategory = (data: InsertCategoryProps) =>
   request<InsertCategoryResultProps>({
     method: 'post',
-    url: '/api/category/insert',
+    url: '/category/insert',
     data,
   });
 
 export const updateCategory = (data: UpdateCategoryParams) =>
   request<UpdateCategoryResult>({
     method: 'post',
-    url: '/api/category/updateCategory',
+    url: '/category/updateCategory',
     data,
   });
 
 export const getBillListByCategoryId = (data: { categoryId: number }) =>
   request<GetBillListByCategoryIdResult>({
     method: 'post',
-    url: '/api/bill/getBillListByCategoryId',
+    url: '/bill/getBillListByCategoryId',
     data,
   });
 
 export const checkBillByCategoryId = (categoryId: number) =>
   request<CheckBillByCategoryId>({
     method: 'post',
-    url: '/api/bill/checkBillByCategoryId',
+    url: '/bill/checkBillByCategoryId',
     data: { categoryId },
   });
 
 export const deleteCategory = (data: DeleteCategoryParams) =>
   request<DeleteCategoryResult>({
     method: 'delete',
-    url: '/api/category/deleteCategory',
+    url: '/category/deleteCategory',
     data,
   });
 
 export const addCategoryToCurrent = (data: AddCategoryToCurrentRequestParams) =>
   request<AddCategoryToCurrentResponseProps>({
     method: 'post',
-    url: '/api/category/addCategoryToCurrent',
+    url: '/category/addCategoryToCurrent',
     data,
   });
 
 export const updateCurrentUserCategory = () =>
   request<UpdateCurrentUserCategoryResult>({
     method: 'post',
-    url: '/api/category/getCurrentUserCategory',
+    url: '/category/getCurrentUserCategory',
   });
 
 export const deleteCategoryAndBill = (id: number) =>
   request<DeleteCategoryAndBillResponse>({
     method: 'post',
-    url: '/api/category/deleteCategoryAndBill',
+    url: '/category/deleteCategoryAndBill',
     data: { id },
   });

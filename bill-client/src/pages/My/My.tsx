@@ -1,7 +1,7 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { List, Button, Toast } from 'antd-mobile';
 import { useStore } from '@/store/useStore';
-import { logout } from '@/api/admin';
+import { logout } from '@/api/user';
 import NavBar from '@/components/NavBar/NavBar';
 import TabBar from '@/components/TabBar/TabBar';
 import defaultAvatar from '@/static/image/default-avatar.jpg';

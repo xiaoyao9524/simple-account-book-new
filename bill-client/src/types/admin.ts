@@ -1,13 +1,13 @@
 import type { BaseResult } from './base';
-import type { UserInfo } from './user';
+import type { BaseResponse } from './baseResponse';
+import type { UserVO } from './user';
 
 export interface SignupRequestProps {
   username: string;
   password: string;
-  confirmPassword: string;
 }
 
-export type RegisterResponseProps = BaseResult<{
+export type RegisterResponseProps = BaseResponse<{
   token: string;
 }>;
 
@@ -16,10 +16,11 @@ export interface LoginRequestProps {
   password: string;
 }
 
-export type LoginResponseProps = BaseResult<{
+export interface LoginResponse {
   token: string;
-}>;
+  userInfo: UserVO;
+}
 
 export type LogoutResponseProps = BaseResult<null>;
 
-export type UserInfoResult = BaseResult<UserInfo>;
+export type UserInfoResult = BaseResult<UserVO>;

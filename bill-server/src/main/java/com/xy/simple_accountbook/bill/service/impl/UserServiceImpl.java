@@ -1,10 +1,11 @@
 package com.xy.simple_accountbook.bill.service.impl;
 
-import com.xy.simple_accountbook.bill.common.utils.JwtUtils;
 import com.xy.simple_accountbook.bill.common.utils.PasswordUtils;
+import com.xy.simple_accountbook.bill.service.TokenService;
 import com.xy.simple_accountbook.bill.dto.request.user.UserLoginRequest;
 import com.xy.simple_accountbook.bill.dto.request.user.UserRegisterRequest;
 import com.xy.simple_accountbook.bill.entity.UserEntity;
+import com.xy.simple_accountbook.bill.entity.vo.LoginVO;
 import com.xy.simple_accountbook.bill.entity.vo.UserVO;
 import com.xy.simple_accountbook.bill.mapper.UserMapper;
 import com.xy.simple_accountbook.bill.service.UserService;
@@ -21,7 +22,7 @@ public class UserServiceImpl implements UserService {
     private PasswordUtils passwordUtils;
 
     @Autowired
-    private JwtUtils jwtUtils;
+    private TokenService tokenService;
 
     @Override
     public UserVO register(UserRegisterRequest request) {
@@ -41,7 +42,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String login(UserLoginRequest request) {
+    public LoginVO login(UserLoginRequest request) {
         UserEntity user = userMapper.loginFindByUsername(request.getUsername());
         if (user == null) {
             throw new RuntimeException("用户名或密码错误");
@@ -49,6 +50,18 @@ public class UserServiceImpl implements UserService {
         if (!passwordUtils.matches(request.getPassword(), user.getPassword())) {
             throw new RuntimeException("用户名或密码错误");
         }
-        return jwtUtils.generateToken(user.getId(), user.getUsername());
+        String token = tokenService.generateToken(user.getId(), user.getUsername());
+        UserVO userInfo = UserVO.transferEntityToUserVO(user);
+
+        LoginVO loginVO = new LoginVO();
+
+        loginVO.setToken(token);
+        loginVO.setUserInfo(userInfo);
+        return loginVO;
+    }
+
+    @Override
+    public void logout(String token) {
+        tokenService.revokeToken(token);
     }
 }

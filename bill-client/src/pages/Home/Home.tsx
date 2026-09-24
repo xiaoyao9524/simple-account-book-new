@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import dayjs, { type Dayjs } from 'dayjs';
 import { Toast, DatePicker, Dialog, SwipeAction, List, NoticeBar } from 'antd-mobile';
 import { useStore } from '@/store/useStore';
+import useSystemStore from '@/store/useSystemStore';
+import useUserStore from '@/store/useUserStore';
 import { getBillListByDate, deleteBill } from '@/api/bill';
 import type { BillItem } from '@/types/bill';
 import TabBar from '@/components/TabBar/TabBar';
@@ -38,18 +40,205 @@ function handlerList(list: BillItem[]): BillListItem[] {
 
 export default function Home() {
   const navigate = useNavigate();
-  const isMobile = useStore((s) => s.system.isMobile);
-  const userInfo = useStore((s) => s.userInfo);
+  const isMobile = useSystemStore(s => s.isMobile);
+  // const userInfo = useStore((s) => s.userInfo);
+  const userInfo = useUserStore(state => state.userInfo);
+
+  console.log('userInfo: ', userInfo)
 
   const [date, setDate] = useState<Dayjs>(dayjs());
   const [datePickerVisible, setDatePickerVisible] = useState(false);
-  const [incomePrice, setIncomePrice] = useState(0);
-  const [expenditurePrice, setExpenditurePrice] = useState(0);
+  // const [incomePrice, setIncomePrice] = useState(0);
+  // const [expenditurePrice, setExpenditurePrice] = useState(0);
   const [list, setList] = useState<BillListItem[]>([]);
   const [year, month] = date.format('YYYY-MM').split('-');
 
+
+
   useEffect(() => {
-    getBillList();
+    // getBillList();
+    setList([
+      {
+        date: '2026-09-24',
+        totalPrice: '666.66',
+        list: [
+          {
+            id: 1,
+            uid: 1,
+            billTime: '2026-09-24',
+            categoryType: 1,
+            price: 66,
+            remark: '备注',
+            category: {
+              id: 1,
+              categoryType: 1,
+              isDefault: 0,
+              title: '游戏',
+              icon: 'icon-shumashouji'
+            }
+          },
+          {
+            id: 2,
+            uid: 1,
+            billTime: '2026-09-24',
+            categoryType: 1,
+            price: 99,
+            remark: '备注2',
+            category: {
+              id: 2,
+              categoryType: 1,
+              isDefault: 0,
+              title: '买菜',
+              icon: 'icon-shumashouji'
+            }
+          }
+        ]
+      },
+      {
+        date: '2026-09-25',
+        totalPrice: '666.66',
+        list: [
+          {
+            id: 1,
+            uid: 1,
+            billTime: '2026-09-24',
+            categoryType: 1,
+            price: 66,
+            remark: '备注',
+            category: {
+              id: 1,
+              categoryType: 1,
+              isDefault: 0,
+              title: '游戏',
+              icon: 'icon-shumashouji'
+            }
+          },
+          {
+            id: 2,
+            uid: 1,
+            billTime: '2026-09-24',
+            categoryType: 1,
+            price: 99,
+            remark: '备注2',
+            category: {
+              id: 2,
+              categoryType: 1,
+              isDefault: 0,
+              title: '买菜',
+              icon: 'icon-shumashouji'
+            }
+          }
+        ]
+      },
+      {
+        date: '2026-09-26',
+        totalPrice: '666.66',
+        list: [
+          {
+            id: 1,
+            uid: 1,
+            billTime: '2026-09-24',
+            categoryType: 1,
+            price: 66,
+            remark: '备注',
+            category: {
+              id: 1,
+              categoryType: 1,
+              isDefault: 0,
+              title: '游戏',
+              icon: 'icon-shumashouji'
+            }
+          },
+          {
+            id: 2,
+            uid: 1,
+            billTime: '2026-09-24',
+            categoryType: 1,
+            price: 99,
+            remark: '备注2',
+            category: {
+              id: 2,
+              categoryType: 1,
+              isDefault: 0,
+              title: '买菜',
+              icon: 'icon-shumashouji'
+            }
+          }
+        ]
+      },
+      {
+        date: '2026-09-27',
+        totalPrice: '666.66',
+        list: [
+          {
+            id: 1,
+            uid: 1,
+            billTime: '2026-09-24',
+            categoryType: 1,
+            price: 66,
+            remark: '备注',
+            category: {
+              id: 1,
+              categoryType: 1,
+              isDefault: 0,
+              title: '游戏',
+              icon: 'icon-shumashouji'
+            }
+          },
+          {
+            id: 2,
+            uid: 1,
+            billTime: '2026-09-24',
+            categoryType: 1,
+            price: 99,
+            remark: '备注2',
+            category: {
+              id: 2,
+              categoryType: 1,
+              isDefault: 0,
+              title: '买菜',
+              icon: 'icon-shumashouji'
+            }
+          }
+        ]
+      },
+      {
+        date: '2026-09-28',
+        totalPrice: '666.66',
+        list: [
+          {
+            id: 1,
+            uid: 1,
+            billTime: '2026-09-24',
+            categoryType: 1,
+            price: 66,
+            remark: '备注',
+            category: {
+              id: 1,
+              categoryType: 1,
+              isDefault: 0,
+              title: '游戏',
+              icon: 'icon-shumashouji'
+            }
+          },
+          {
+            id: 2,
+            uid: 1,
+            billTime: '2026-09-24',
+            categoryType: 1,
+            price: 99,
+            remark: '备注2',
+            category: {
+              id: 2,
+              categoryType: 1,
+              isDefault: 0,
+              title: '买菜',
+              icon: 'icon-shumashouji'
+            }
+          }
+        ]
+      }
+    ])
   }, [year, month]);
 
   async function getBillList() {
@@ -109,77 +298,79 @@ export default function Home() {
       {userInfo.username === '' ? (
         <NoLogin />
       ) : (
-        <div>
-          {!isMobile && (
-            <NoticeBar content="请使用移动模式/设备打开此页以获得更好的体验。" />
-          )}
-          <header className="head-container">
-            <ul className="header-list">
-              <li
-                className="header-item date-item"
-                onClick={() => setDatePickerVisible(true)}
-              >
-                <p className="title">{year}年</p>
-                <p className="value">
-                  {month}月
-                  <span className="icon iconfont-base icon-down" />
-                </p>
-              </li>
-              <li className="header-item">
-                <p className="title">收入</p>
-                <p className="value">{incomePrice.toFixed(2)}</p>
-              </li>
-              <li className="header-item">
-                <p className="title">支出</p>
-                <p className="value">{expenditurePrice.toFixed(2)}</p>
-              </li>
-            </ul>
-          </header>
-
-          <div className="book-list-wrapper">
-            {list.map((billItem) => (
-              <List key={billItem.date} header={
-                <div className="bill-item-header">
-                  <p className="date">{billItem.date}</p>
-                  <p className={`price-total ${Number(billItem.totalPrice) < 0 ? 'minus' : ''}`}>
-                    {billItem.totalPrice}
+        <>
+          <div className="home-container">
+            {!isMobile && (
+              <NoticeBar content="请使用移动模式/设备打开此页以获得更好的体验。" />
+            )}
+            <header className="head-container">
+              <ul className="header-list">
+                <li
+                  className="header-item date-item"
+                  onClick={() => setDatePickerVisible(true)}
+                >
+                  <p className="title">2026年</p>
+                  <p className="value">
+                    9月
+                    <span className="icon iconfont-base icon-down" />
                   </p>
-                </div>
-              }>
-                {billItem.list.map((item) => (
-                  <SwipeAction
-                    key={item.id}
-                    rightActions={[
-                      { key: 'edit', text: '编辑', color: 'primary' },
-                      { key: 'delete', text: '删除', color: 'danger' },
-                    ]}
-                    onAction={(action) => {
-                      if (action.key === 'edit') handlerEdit(item);
-                      if (action.key === 'delete') confirmDelete(item);
-                    }}
-                  >
-                    <List.Item
-                      extra={`${item.categoryType === 1 ? '-' : ''}${item.price}`}
-                    >
-                      {item.remark || item.category.title}
-                    </List.Item>
-                  </SwipeAction>
-                ))}
-              </List>
-            ))}
-          </div>
+                </li>
+                <li className="header-item">
+                  <p className="title">收入</p>
+                  <p className="value">9999999.99</p>
+                </li>
+                <li className="header-item">
+                  <p className="title">支出</p>
+                  <p className="value">66666666.66</p>
+                </li>
+              </ul>
+            </header>
 
-          <DatePicker
-            visible={datePickerVisible}
-            value={date.toDate()}
-            precision="month"
-            onConfirm={(d) => {
-              setDate(dayjs(d));
-              setDatePickerVisible(false);
-            }}
-            onClose={() => setDatePickerVisible(false)}
-          />
-        </div>
+            <div className="book-list-wrapper">
+              {list.map((billItem) => (
+                <List key={billItem.date} header={
+                  <div className="bill-item-header">
+                    <p className="date">{billItem.date}</p>
+                    <p className={`price-total ${Number(billItem.totalPrice) < 0 ? 'minus' : ''}`}>
+                      {billItem.totalPrice}
+                    </p>
+                  </div>
+                }>
+                  {billItem.list.map((item) => (
+                    <SwipeAction
+                      key={item.id}
+                      rightActions={[
+                        { key: 'edit', text: '编辑', color: 'primary' },
+                        { key: 'delete', text: '删除', color: 'danger' },
+                      ]}
+                      onAction={(action) => {
+                        if (action.key === 'edit') handlerEdit(item);
+                        if (action.key === 'delete') confirmDelete(item);
+                      }}
+                    >
+                      <List.Item
+                        extra={`${item.categoryType === 1 ? '-' : ''}${item.price}`}
+                      >
+                        {item.remark || item.category.title}
+                      </List.Item>
+                    </SwipeAction>
+                  ))}
+                </List>
+              ))}
+            </div>
+
+            <DatePicker
+              visible={datePickerVisible}
+              value={date.toDate()}
+              precision="month"
+              onConfirm={(d) => {
+                setDate(dayjs(d));
+                setDatePickerVisible(false);
+              }}
+              onClose={() => setDatePickerVisible(false)}
+            />
+          </div>
+        </>
       )}
       <TabBar />
     </div>
