@@ -1,6 +1,8 @@
 import type { BaseResult } from './base';
 import type { BillItem } from './bill';
 
+
+
 export interface CategoryItem {
   readonly id: number;
   categoryType: 0 | 1;

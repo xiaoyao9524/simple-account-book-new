@@ -1,4 +1,4 @@
-import { useState, useImperativeHandle, forwardRef, type CSSProperties } from 'react';
+import { useState, useImperativeHandle, type CSSProperties, type Ref } from 'react';
 import { Button, DatePicker } from 'antd-mobile';
 import dayjs, { type Dayjs } from 'dayjs';
 import './style.scss';
@@ -23,24 +23,32 @@ export interface CalculatorOnConfirmResult {
   price: string;
 }
 
-export interface CalculatorRefProps {
-  setData: (data: SetDataProps) => void;
-}
-
 interface SetDataProps {
   date?: string | Dayjs;
   remark?: string;
   price: number | string;
 }
 
+export interface CalculatorRefProps {
+  setData: (data: SetDataProps) => void;
+}
+
+
+
 interface CalculatorProps {
+  ref?: Ref<CalculatorRefProps>;
   onConfirm?: (result: CalculatorOnConfirmResult) => void;
   style?: CSSProperties;
 }
 
-const Calculator = forwardRef<CalculatorRefProps, CalculatorProps>(
-  ({ onConfirm, style }, ref) => {
-    const [date, setDate] = useState<Dayjs>(dayjs());
+
+
+// const Calculator = forwardRef<CalculatorRefProps, CalculatorProps>(
+  
+// );
+
+const Calculator = ({ref, style, onConfirm}: CalculatorProps) => {
+  const [date, setDate] = useState<Dayjs>(dayjs());
     const [remark, setRemark] = useState('');
     const [firstPrice, setFirstPrice] = useState<string>('0');
     const [secondPrice, setSecondPrice] = useState<string>('');
@@ -66,14 +74,14 @@ const Calculator = forwardRef<CalculatorRefProps, CalculatorProps>(
 
     function handlerInputNumber(num: number) {
       const isFirst = calculation === null;
-      const isZero = num === 0;
+      // const isZero = num === 0;
       let price: string;
-      if (isZero) {
-        const curPrice = isFirst ? firstPrice : secondPrice;
-        const floatStr = curPrice.split('.')[1];
-        if (floatStr && floatStr.length >= 2) {
-          return;
-        }
+      // if (isZero) {
+      // }
+      const curPrice = isFirst ? firstPrice : secondPrice;
+      const floatStr = curPrice.split('.')[1];
+      if (floatStr && floatStr.length >= 2) {
+        return;
       }
       price = isFirst ? firstPrice : secondPrice;
       price = price === '' || price === '0' ? `${num}` : price + num;
@@ -83,7 +91,7 @@ const Calculator = forwardRef<CalculatorRefProps, CalculatorProps>(
 
     function handlerInputCalculation(c: CalculationType) {
       const firstPriceNumber = parseFloat(firstPrice);
-      const secondPriceNumber = parseInt(secondPrice);
+      const secondPriceNumber = parseFloat(secondPrice);
       const isInputSecondPrice = !isNaN(secondPriceNumber);
       if (isInputSecondPrice) {
         const currentPrice =
@@ -111,7 +119,12 @@ const Calculator = forwardRef<CalculatorRefProps, CalculatorProps>(
       let price = isInpCalculation ? secondPrice : firstPrice;
       if (checkNumberIsInt(price)) {
         price += '.';
-        isInpCalculation ? setSecondPrice(price) : setFirstPrice(price);
+        // isInpCalculation ? setSecondPrice(price) : setFirstPrice(price);
+        if (isInpCalculation) {
+          setSecondPrice(price);
+        } else {
+          setFirstPrice(price);
+        }
       }
     }
 
@@ -244,8 +257,7 @@ const Calculator = forwardRef<CalculatorRefProps, CalculatorProps>(
         />
       </div>
     );
-  }
-);
+}
 
 Calculator.displayName = 'Calculator';
 export default Calculator;

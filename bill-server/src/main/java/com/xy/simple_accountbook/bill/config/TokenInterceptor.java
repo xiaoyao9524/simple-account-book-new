@@ -4,7 +4,7 @@ import com.xy.simple_accountbook.bill.common.context.UserContext;
 import com.xy.simple_accountbook.bill.entity.TokenEntity;
 import com.xy.simple_accountbook.bill.entity.vo.BaseResponse;
 import com.xy.simple_accountbook.bill.service.TokenService;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
@@ -13,7 +13,8 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @Component
 public class TokenInterceptor implements HandlerInterceptor {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final JsonMapper jsonMapper = new JsonMapper();
+
     private final TokenService tokenService;
 
     public TokenInterceptor(TokenService tokenService) {
@@ -58,6 +59,6 @@ public class TokenInterceptor implements HandlerInterceptor {
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         BaseResponse<Void> baseResponse = BaseResponse.fail(message);
-        response.getWriter().write(objectMapper.writeValueAsString(baseResponse));
+        response.getWriter().write(jsonMapper.writeValueAsString(baseResponse));
     }
 }
