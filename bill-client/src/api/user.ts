@@ -13,6 +13,13 @@ export const register = (data: SignupRequestProps) =>
     data,
   });
 
+  export const batchInsertDefaultIcons = () => (
+    request({
+      method: 'get',
+      url: '/user/test'
+    })
+  )
+
 export function login(data: LoginRequestProps) {
   return request<LoginResponse>({
     method: 'post',

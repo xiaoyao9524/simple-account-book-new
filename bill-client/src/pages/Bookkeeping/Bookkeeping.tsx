@@ -147,7 +147,7 @@ export default function Bookkeeping() {
             />
           </div>
 
-          <div className="icon-box">
+          <div className="icon-box" style={{paddingBottom: currentIcon ? '390px' : ''}}>
             <ul className="icon-list">
               {currentIcons.map((i) => (
                 <li

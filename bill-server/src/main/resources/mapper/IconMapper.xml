@@ -19,4 +19,11 @@
         WHERE u_id IS NULL
         ORDER BY id ASC
     </select>
+    <insert id="batchInsertDefaultIcons">
+        INSERT INTO user_icon (u_id, icon_id)
+        VALUES
+            <foreach collection="list" item="item" separator=",">
+                (#{item.uId}, #{item.iconId})
+            </foreach>
+    </insert>
 </mapper>
