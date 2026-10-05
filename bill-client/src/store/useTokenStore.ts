@@ -3,6 +3,7 @@ import { create } from 'zustand';
 interface TokenStore {
   token: string;
   setToken: (token: string) => void;
+  clearToken: () => void;
 }
 
 const useTokenStore = create<TokenStore>((set) => ({
@@ -14,6 +15,10 @@ const useTokenStore = create<TokenStore>((set) => ({
       localStorage.removeItem('token');
     }
     return { token };
+  }),
+  clearToken: () => set(() => {
+    localStorage.removeItem('token');
+    return { token: '' }
   })
 }))
 

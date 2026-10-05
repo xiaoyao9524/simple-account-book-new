@@ -4,6 +4,7 @@ import type { UserVO } from '@/types/user';
 interface UserStore {
   userInfo: UserVO;
   setUserInfo: (userInfo: UserVO) => void;
+  clearUserInfo: () => void;
 }
 
 const initialUserInfo = JSON.stringify({
@@ -23,8 +24,11 @@ const useUserStore = create<UserStore>((set) => ({
     }
     localStorage.removeItem('userInfo');
     return {userInfo: getInitialUserInfo()};
+  }),
+  clearUserInfo: () => set(() => {
+    localStorage.removeItem('userInfo');
+    return {userInfo: getInitialUserInfo()};
   })
-
 }))
 
 export default useUserStore;

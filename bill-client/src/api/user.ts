@@ -2,8 +2,7 @@ import request from './request';
 import type {
   SignupRequestProps,
   LoginRequestProps,
-  LoginResponse,
-  LogoutResponseProps,
+  LoginResponse
 } from '@/types/admin';
 
 export const register = (data: SignupRequestProps) =>
@@ -12,13 +11,6 @@ export const register = (data: SignupRequestProps) =>
     url: '/user/register',
     data,
   });
-
-  export const batchInsertDefaultIcons = () => (
-    request({
-      method: 'get',
-      url: '/user/test'
-    })
-  )
 
 export function login(data: LoginRequestProps) {
   return request<LoginResponse>({
@@ -29,8 +21,8 @@ export function login(data: LoginRequestProps) {
 }
 
 export function logout() {
-  return request<LogoutResponseProps>({
+  return request({
     method: 'post',
-    url: '/admin/logout',
+    url: '/user/logout',
   });
 }

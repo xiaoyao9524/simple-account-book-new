@@ -21,6 +21,4 @@ export interface LoginResponse {
   userInfo: UserVO;
 }
 
-export type LogoutResponseProps = BaseResult<null>;
-
 export type UserInfoResult = BaseResult<UserVO>;
