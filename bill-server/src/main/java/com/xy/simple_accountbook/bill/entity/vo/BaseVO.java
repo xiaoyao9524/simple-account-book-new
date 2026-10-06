@@ -2,10 +2,10 @@ package com.xy.simple_accountbook.bill.entity.vo;
 
 import lombok.Data;
 
-import java.util.Date;
+//import java.util.Date;
 
 @Data
 public class BaseVO {
-    private Date createTime;
-    private Date updateTime;
+//    private Date createTime;
+//    private Date updateTime;
 }

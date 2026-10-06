@@ -1,29 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.xy.simple_accountbook.bill.mapper.IconMapper">
-    <resultMap id="iconResultMap" type="com.xy.simple_accountbook.bill.entity.IconEntity">
+<mapper namespace="com.xy.simple_accountbook.bill.mapper.CategoryMapper">
+    <resultMap id="categoryResultMap" type="com.xy.simple_accountbook.bill.entity.CategoryEntity">
         <id column="id" property="id"/>
         <result column="u_id" property="uId"/>
-        <result column="title" property="title"/>
-        <result column="icon" property="icon"/>
         <result column="type" property="type"
                 typeHandler="com.xy.simple_accountbook.bill.handler.CategoryTypeHandler"/>
+        <result column="title" property="title"/>
+        <result column="icon" property="icon"/>
         <result column="create_time" property="createTime"/>
         <result column="update_time" property="updateTime"/>
     </resultMap>
-    <select id="queryDefaultIcons"
-            resultMap="iconResultMap">
+
+    <select id="queryDefaultCategories"
+            resultMap="categoryResultMap">
         SELECT id, u_id, title, icon, type, create_time, update_time
-        FROM icon
+        FROM category
         WHERE u_id IS NULL
         ORDER BY id ASC
     </select>
-    <insert id="batchInsertDefaultIcons">
-        INSERT INTO user_icon (u_id, icon_id)
+
+    <insert id="batchInsertDefaultCategories">
+        INSERT INTO user_category (u_id, category_id)
         VALUES
             <foreach collection="list" item="item" separator=",">
-                (#{item.uId}, #{item.iconId})
+                (#{item.uId}, #{item.categoryId})
             </foreach>
     </insert>
+
+    <select id="queryUserCategories">
+        SELECT c.id, c.title, c.icon, c.type
+        FROM user_category u_c
+        INNER JOIN category c ON u_c.category_id = c.id
+        WHERE u_c.u_id = #{userId}
+        ORDER BY c.id ASC
+    </select>
 </mapper>

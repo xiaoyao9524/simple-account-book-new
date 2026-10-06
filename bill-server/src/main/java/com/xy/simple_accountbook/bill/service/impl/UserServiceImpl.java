@@ -3,12 +3,12 @@ package com.xy.simple_accountbook.bill.service.impl;
 import com.xy.simple_accountbook.bill.common.utils.PasswordUtils;
 import com.xy.simple_accountbook.bill.dto.request.user.UserLoginRequest;
 import com.xy.simple_accountbook.bill.dto.request.user.UserRegisterRequest;
-import com.xy.simple_accountbook.bill.entity.IconEntity;
+import com.xy.simple_accountbook.bill.entity.CategoryEntity;
 import com.xy.simple_accountbook.bill.entity.UserEntity;
-import com.xy.simple_accountbook.bill.entity.UserIconEntity;
+import com.xy.simple_accountbook.bill.entity.UserCategoryEntity;
 import com.xy.simple_accountbook.bill.entity.vo.LoginVO;
 import com.xy.simple_accountbook.bill.entity.vo.UserVO;
-import com.xy.simple_accountbook.bill.mapper.IconMapper;
+import com.xy.simple_accountbook.bill.mapper.CategoryMapper;
 import com.xy.simple_accountbook.bill.mapper.UserMapper;
 import com.xy.simple_accountbook.bill.service.TokenService;
 import com.xy.simple_accountbook.bill.service.UserService;
@@ -31,10 +31,10 @@ public class UserServiceImpl implements UserService {
     private TokenService tokenService;
 
     @Autowired
-    private IconServiceImpl iconService;
+    private CategoryServiceImpl categoryService;
 
     @Autowired
-    private IconMapper iconMapper;
+    private CategoryMapper categoryMapper;
 
     @Override
     public UserVO register(UserRegisterRequest request) {
@@ -50,36 +50,36 @@ public class UserServiceImpl implements UserService {
 
         userMapper.register(userEntity);
 
-        List<IconEntity> defaultIcons = iconService.queryDefaultIcons();
+        List<CategoryEntity> defaultCategories = categoryMapper.queryDefaultCategories();
 
-        List<UserIconEntity> userIconEntitys = defaultIcons.stream().map(icon -> {
-            UserIconEntity userIconEntity = new UserIconEntity();
+        List<UserCategoryEntity> userCategoryEntitys = defaultCategories.stream().map(category -> {
+            UserCategoryEntity userCategoryEntity = new UserCategoryEntity();
 
-            userIconEntity.setUId(userEntity.getId());
-            userIconEntity.setIconId(icon.getId());
+            userCategoryEntity.setUId(userEntity.getId());
+            userCategoryEntity.setCategoryId(category.getId());
 
-            return userIconEntity;
+            return userCategoryEntity;
         }).collect(Collectors.toList());
 
-        iconMapper.batchInsertDefaultIcons(userIconEntitys);
+        categoryMapper.batchInsertDefaultCategories(userCategoryEntitys);
 
         return UserVO.transferEntityToUserVO(userEntity);
     }
 
     @Override
-    public Integer insertDefaultIcons (Long uId) {
-        List<IconEntity> defaultIcons = iconMapper.queryDefaultIcons();
+    public Integer insertDefaultCategories (Long uId) {
+        List<CategoryEntity> defaultCategories = categoryMapper.queryDefaultCategories();
 
-        List<UserIconEntity> userIconEntitys = defaultIcons.stream().map(icon -> {
-            UserIconEntity userIconEntity = new UserIconEntity();
+        List<UserCategoryEntity> userCategoryEntitys = defaultCategories.stream().map(category -> {
+            UserCategoryEntity userCategoryEntity = new UserCategoryEntity();
 
-            userIconEntity.setUId(uId);
-            userIconEntity.setIconId(icon.getId());
+            userCategoryEntity.setUId(uId);
+            userCategoryEntity.setCategoryId(category.getId());
 
-            return userIconEntity;
+            return userCategoryEntity;
         }).collect(Collectors.toList());
 
-        return iconMapper.batchInsertDefaultIcons(userIconEntitys);
+        return categoryMapper.batchInsertDefaultCategories(userCategoryEntitys);
     }
 
     @Override

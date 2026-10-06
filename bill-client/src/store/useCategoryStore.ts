@@ -1,23 +1,23 @@
 import { create } from 'zustand';
 import { CategoryTypeEnum } from '@/enums/categoryEnum'
-import type { IconVO } from '@/types/Icon'
-import { queryDefaultIcons } from '@/api/icon'
+import type { CategoryVO } from '@/types/category'
+import { queryUserCategory } from '@/api/category'
 
 export interface IconStore {
-  incomeList: IconVO[];
-  expendList: IconVO[];
+  incomeList: CategoryVO[];
+  expendList: CategoryVO[];
   updateList: () => Promise<any>;
 }
 
-const useIconStore = create<IconStore>((set) => ({
+const useCategoryStore = create<IconStore>((set) => ({
   incomeList: [],
   expendList: [],
   updateList: async () => {
-    const res = await queryDefaultIcons();
+    const res = await queryUserCategory();
 
     if (res) {
-      const incomeList: IconVO[] = [];
-      const expendList: IconVO[] = [];
+      const incomeList: CategoryVO[] = [];
+      const expendList: CategoryVO[] = [];
 
       for (const icon of res.data) {
         if (icon.type === CategoryTypeEnum.INCOME) {
@@ -35,4 +35,4 @@ const useIconStore = create<IconStore>((set) => ({
   }
 }))
 
-export default useIconStore;
+export default useCategoryStore;

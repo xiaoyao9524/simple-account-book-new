@@ -3,13 +3,10 @@ package com.xy.simple_accountbook.bill.controller;
 import com.xy.simple_accountbook.bill.common.context.UserContext;
 import com.xy.simple_accountbook.bill.dto.request.user.UserLoginRequest;
 import com.xy.simple_accountbook.bill.dto.request.user.UserRegisterRequest;
-import com.xy.simple_accountbook.bill.entity.IconEntity;
-import com.xy.simple_accountbook.bill.entity.UserIconEntity;
 import com.xy.simple_accountbook.bill.entity.vo.BaseResponse;
 import com.xy.simple_accountbook.bill.entity.vo.LoginVO;
 import com.xy.simple_accountbook.bill.entity.vo.UserVO;
 import com.xy.simple_accountbook.bill.service.UserService;
-import com.xy.simple_accountbook.bill.service.impl.IconServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,9 +48,9 @@ public class UserController {
     public BaseResponse<String> test() {
         Long id = UserContext.getUserId();
 
-//        return userService.insertDefaultIcons(id);
+//        return userService.insertDefaultCategories(id);
 
         return BaseResponse.success("success, 当前用户：" + UserContext.getUsername());
-//        return BaseResponse.success(userService.insertDefaultIcons(id));
+//        return BaseResponse.success(userService.insertDefaultCategories(id));
     }
 }

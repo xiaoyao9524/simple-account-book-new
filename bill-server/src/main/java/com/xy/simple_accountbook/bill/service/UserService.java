@@ -8,7 +8,7 @@ import com.xy.simple_accountbook.bill.entity.vo.UserVO;
 public interface UserService {
     UserVO register(UserRegisterRequest request);
 
-    Integer insertDefaultIcons(Long uId);
+    Integer insertDefaultCategories(Long uId);
 
     LoginVO login(UserLoginRequest request);
 

@@ -1,57 +1,43 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { useNavigate, useLocation } from 'react-router';
-import { Segmented, Toast } from 'antd-mobile';
-import { useStore } from '@/store/useStore';
+import { useNavigate } from 'react-router';
+import { Segmented } from 'antd-mobile';
 import useUserStore from '@/store/useUserStore'
-import useIconStore from '@/store/useIconStore'
+import useCategoryStore from '@/store/useCategoryStore'
 
 import {CategoryTypeEnum, type CategoryType} from '@/enums/categoryEnum'
-import type {IconVO} from '@/types/Icon'
+import type {CategoryVO} from '@/types/category'
 
 import NavBar from '@/components/NavBar/NavBar';
 import NoLogin from '@/components/NoLogin/NoLogin';
 import Calculator, { type CalculatorOnConfirmResult, type CalculatorRefProps } from '@/components/Calculator/Calculator';
 
-
-import type { CategoryItem } from '@/types/category';
-import type { InsertBillProps, UpdateBillProps, BillItem } from '@/types/bill';
-import { insertBill, updateBill } from '@/api/bill';
-
 import './style.scss';
-
-// type Tab = '支出' | '收入';
-
-// const tabEnum: Record<Tab, number> = { '收入': 0, '支出': 1 };
 
 export default function Bookkeeping() {
   const navigate = useNavigate();
   // const location = useLocation();
   const userInfo = useUserStore(state => state.userInfo);
-  const incomeIcons = useIconStore(state => state.incomeList);
-  const expendIcons = useIconStore(state => state.expendList);
-  const updateIconList = useIconStore(state => state.updateList);
-  // const userInfo = useStore((s) => s.userInfo);
-  // const expenditureIcons = useStore((s) => s.userInfo.category.expenditureList);
-  // const incomeIcons = useStore((s) => s.userInfo.category.incomeList);
+  const incomeCategorys = useCategoryStore(state => state.incomeList);
+  const expendCategorys = useCategoryStore(state => state.expendList);
+  const updateCategoryList = useCategoryStore(state => state.updateList);
 
-  // const currentId = useRef<number | null>(null);
-  const [currentIcon, setCurrentIcon] = useState<IconVO | null>(null);
+  const [currentIcon, setCurrentIcon] = useState<CategoryVO | null>(null);
   const [tab, setTab] = useState<CategoryType>(CategoryTypeEnum.EXPEND);
   const calculatorInstance = useRef<CalculatorRefProps>(null);
   // const [category, setCategory] = useState<CategoryItem | undefined>(undefined);
 
   const currentIcons = useMemo(
-    () => (tab === CategoryTypeEnum.INCOME ? incomeIcons : expendIcons),
-    [tab, incomeIcons, expendIcons]
+    () => (tab === CategoryTypeEnum.INCOME ? incomeCategorys : expendCategorys),
+    [tab, incomeCategorys, expendCategorys]
   );
 
   useEffect(() => {
-    if (!incomeIcons.length || !expendIcons.length) {
-      updateIconList().then(() => {
-        console.log(incomeIcons, expendIcons)
+    if (!incomeCategorys.length || !expendCategorys.length) {
+      updateCategoryList().then(() => {
+        console.log(incomeCategorys, expendCategorys)
       });
     }
-  }, [updateIconList, incomeIcons, expendIcons]);
+  }, [updateCategoryList, incomeCategorys, expendCategorys]);
 
   // useEffect(() => {
   //   const editData = location.state as BillItem | null;

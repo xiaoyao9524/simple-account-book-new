@@ -1,4 +1,5 @@
 import request from './request';
+import type { CategoryVO } from '@/types/category';
 import type {
   GetAllCategoryListResult,
   InsertCategoryProps,
@@ -14,6 +15,14 @@ import type {
   AddCategoryToCurrentResponseProps,
   DeleteCategoryAndBillResponse,
 } from '@/types/category';
+
+export const queryUserCategory = () => (
+  request<CategoryVO[]>({
+    method: 'get',
+    url: '/category/queryUserCategory'
+  })
+)
+/**old */
 
 export const getAllCategoryList = () =>
   request<GetAllCategoryListResult>({
