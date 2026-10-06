@@ -2,6 +2,8 @@
   padding: 102px 0 50px;
 
   .tabs {
+    display: flex;
+    justify-content: center;
     position: fixed;
     left: 0;
     top: 45px;

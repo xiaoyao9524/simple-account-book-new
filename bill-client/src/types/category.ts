@@ -14,7 +14,6 @@ export interface CategoryVO {
 export interface CategoryItem {
   readonly id: number;
   categoryType: 0 | 1;
-  isDefault: 0 | 1;
   title: string;
   icon: string;
 }

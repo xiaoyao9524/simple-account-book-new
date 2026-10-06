@@ -4,6 +4,7 @@ import { Routes, Route } from 'react-router';
 import useSystemStore from './store/useSystemStore';
 import useTokenStore from './store/useTokenStore';
 import useUserStore, { getInitialUserInfo } from './store/useUserStore';
+import useCategoryStore from './store/useCategoryStore';
 import type { UserVO } from '@/types/user'
 import { checkSystemInfo } from '@/utils/system'
 
@@ -21,7 +22,7 @@ export default function App() {
   const setSystemInfo = useSystemStore(store => store.setSystemInfo);
   const setToken = useTokenStore(store => store.setToken);
   const setUserInfo = useUserStore(store => store.setUserInfo);
-
+  const updateCategoryList = useCategoryStore(store => store.updateList);
   const initialSystemInfo = useCallback(() => {
     const systemInfo = checkSystemInfo();
 
@@ -33,6 +34,7 @@ export default function App() {
 
     if (localToken) {
       setToken(localToken);
+      updateCategoryList();
     } else {
       setToken('');
     }

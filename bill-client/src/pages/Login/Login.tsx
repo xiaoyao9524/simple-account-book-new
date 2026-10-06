@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router';
 import { Form, Input, Button } from 'antd-mobile';
 import useTokenStore from '@/store/useTokenStore';
 import useUserStore from '@/store/useUserStore';
+import useCategoryStore from '@/store/useCategoryStore';
 import useQuery from '@/hooks/useQuery';
 import { login } from '@/api/user';
 import type { LoginRequestProps } from '@/types/admin';
@@ -13,6 +14,7 @@ export default function Login() {
   const query = useQuery();
   const setToken = useTokenStore((state) => state.setToken);
   const setUserInfo = useUserStore(state => state.setUserInfo);
+  const updateCategoryList = useCategoryStore(state => state.updateList);
   const [form] = Form.useForm()
 
   async function handlerLogin(data: LoginRequestProps) {
@@ -21,6 +23,8 @@ export default function Login() {
     if (loginRes) {
       setToken(loginRes.data.token);
       setUserInfo(loginRes.data.userInfo);
+
+      updateCategoryList();
 
       navigate(query.redirect ? decodeURIComponent(query.redirect) : '/', { replace: true });
     }

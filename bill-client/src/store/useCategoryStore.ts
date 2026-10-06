@@ -3,13 +3,13 @@ import { CategoryTypeEnum } from '@/enums/categoryEnum'
 import type { CategoryVO } from '@/types/category'
 import { queryUserCategory } from '@/api/category'
 
-export interface IconStore {
+export interface CategoryStore {
   incomeList: CategoryVO[];
   expendList: CategoryVO[];
   updateList: () => Promise<any>;
 }
 
-const useCategoryStore = create<IconStore>((set) => ({
+const useCategoryStore = create<CategoryStore>((set) => ({
   incomeList: [],
   expendList: [],
   updateList: async () => {
