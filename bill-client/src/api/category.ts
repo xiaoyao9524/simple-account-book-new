@@ -22,6 +22,15 @@ export const queryUserCategory = () => (
     url: '/category/queryUserCategory'
   })
 )
+
+export const updateUserCategory = (categorys: CategoryVO[]) => (
+  request({
+    method: 'post',
+    url: '/category/updateUserCategory',
+    data: categorys
+  })
+)
+
 /**old */
 
 export const getAllCategoryList = () =>

@@ -3,4 +3,13 @@ export const CategoryTypeEnum = {
   EXPEND: 0
 } as const;
 
+
+
 export type CategoryType = typeof CategoryTypeEnum[keyof typeof CategoryTypeEnum];
+
+export const CategoryEnableEnum = {
+  ENABLE: 1,
+  DISABLE: 0
+} as const;
+
+export type CategoryEnable = typeof CategoryEnableEnum[keyof typeof CategoryEnableEnum];

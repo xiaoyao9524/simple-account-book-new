@@ -24,39 +24,39 @@ const iconList = [
 ];
 
 export default function InsertCategory() {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const state = location.state as { type?: '支出' | '收入' } | null;
-  const setUserCategory = useStore((s) => s.setUserCategory);
+  // const navigate = useNavigate();
+  // const location = useLocation();
+  // const state = location.state as { type?: '支出' | '收入' } | null;
+  // const setUserCategory = useStore((s) => s.setUserCategory);
 
-  const [currentIcon, setCurrentIcon] = useState(iconList[0].list[0]);
-  const categoryType: 0 | 1 = state?.type === '收入' ? 0 : 1;
-  const { register, handleSubmit, formState: { errors } } = useForm<{ title: string }>();
+  // const [currentIcon, setCurrentIcon] = useState(iconList[0].list[0]);
+  // const categoryType: 0 | 1 = state?.type === '收入' ? 0 : 1;
+  // const { register, handleSubmit, formState: { errors } } = useForm<{ title: string }>();
 
-  useEffect(() => {
-    if (!state || !state.type) {
-      navigate('/', { replace: true });
-    }
-  }, [state, navigate]);
+  // useEffect(() => {
+  //   if (!state || !state.type) {
+  //     navigate('/', { replace: true });
+  //   }
+  // }, [state, navigate]);
 
-  async function handlerSave(data: { title: string }) {
-    const params: InsertCategoryProps = {
-      title: data.title,
-      categoryType,
-      icon: currentIcon,
-    };
-    try {
-      const res = await insertCategory(params);
-      if (res.status === 200) {
-        setUserCategory(res.data);
-        navigate(-1);
-      } else {
-        Toast.show({ content: res.message, icon: 'fail' });
-      }
-    } catch (err) {
-      Toast.show({ content: (err as Error).message, icon: 'fail' });
-    }
-  }
+  // async function handlerSave(data: { title: string }) {
+  //   const params: InsertCategoryProps = {
+  //     title: data.title,
+  //     categoryType,
+  //     icon: currentIcon,
+  //   };
+  //   try {
+  //     const res = await insertCategory(params);
+  //     if (res.status === 200) {
+  //       setUserCategory(res.data);
+  //       navigate(-1);
+  //     } else {
+  //       Toast.show({ content: res.message, icon: 'fail' });
+  //     }
+  //   } catch (err) {
+  //     Toast.show({ content: (err as Error).message, icon: 'fail' });
+  //   }
+  // }
 
   return (
     <div className="insert-category">
@@ -64,19 +64,15 @@ export default function InsertCategory() {
         新增类别
       </NavBar>
 
-      <form className="form-area" onSubmit={handleSubmit(handlerSave)}>
+      <form className="form-area" >
         <div className="input-row">
           <label className="label">类别名称</label>
           <input
             className="input"
-            {...register('title', {
-              required: '必须输入类别名称',
-              maxLength: { value: 4, message: '类别名称不要超过四个汉字' },
-            })}
             placeholder="类别名称(不超过四个汉字)"
           />
         </div>
-        {errors.title && <p className="error">{errors.title.message}</p>}
+        <p className="error">请输入xxx</p>
       </form>
 
       <ul className="icon-list-wrapper">
@@ -84,11 +80,10 @@ export default function InsertCategory() {
           <li key={i.title} className="icon-list-item">
             <h3 className="icon-list-title">{i.title}</h3>
             <ul className="icon-list">
-              {i.list.map((icon) => (
+              {i.list.map((icon, index) => (
                 <li
                   key={icon}
-                  className={`icon-item ${currentIcon === icon ? 'active' : ''}`}
-                  onClick={() => setCurrentIcon(icon)}
+                  className={`icon-item ${index === 0 ? 'active' : ''}`}
                 >
                   <span className={`icon iconfont icon-${icon}`} />
                 </li>
@@ -99,7 +94,7 @@ export default function InsertCategory() {
       </ul>
 
       <div className="save-btn-wrapper">
-        <Button block color="primary" onClick={handleSubmit(handlerSave)}>
+        <Button block color="primary">
           保存
         </Button>
       </div>

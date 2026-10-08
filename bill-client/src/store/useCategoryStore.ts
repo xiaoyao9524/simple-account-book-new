@@ -19,11 +19,14 @@ const useCategoryStore = create<CategoryStore>((set) => ({
       const incomeList: CategoryVO[] = [];
       const expendList: CategoryVO[] = [];
 
-      for (const icon of res.data) {
-        if (icon.type === CategoryTypeEnum.INCOME) {
-          incomeList.push(icon);
+      for (const category of res.data) {
+        if (typeof category.sort !== 'number') {
+          category.sort = 0;
+        }
+        if (category.type === CategoryTypeEnum.INCOME) {
+          incomeList.push(category);
         } else {
-          expendList.push(icon);
+          expendList.push(category);
         }
       }
 

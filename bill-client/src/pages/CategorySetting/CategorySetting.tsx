@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 import { Segmented, Toast, Dialog, Button } from 'antd-mobile';
 
@@ -7,7 +7,7 @@ import { isSortable } from '@dnd-kit/react/sortable';
 
 import useCategoryStore from '@/store/useCategoryStore'
 
-import { CategoryTypeEnum, type CategoryType } from '@/enums/categoryEnum'
+import { CategoryTypeEnum, type CategoryType, CategoryEnableEnum } from '@/enums/categoryEnum'
 import type {
   CategoryVO
 } from '@/types/category';
@@ -25,19 +25,55 @@ export default function CategorySetting() {
   const expendCategorys = useCategoryStore(state => state.expendList);
   // const updateCategoryList = useCategoryStore(state => state.updateList);
 
+  const {enableIncomeCategorys, disableIncomeCategorys, enableExpendCategorys, disableExpendCategorys} = useMemo(() => {
+    const enableIncomeCategorys: CategoryVO[] = [];
+    const disableIncomeCategorys: CategoryVO[] = [];
+    for (const item of incomeCategorys) {
+      if (item.enable === CategoryEnableEnum.ENABLE) {
+        enableIncomeCategorys.push(item);
+      } else {
+        disableIncomeCategorys.push(item);
+      }
+    }
+    enableIncomeCategorys.sort((a,b) => a.sort - b.sort);
+    const enableExpendCategorys: CategoryVO[] = [];
+    const disableExpendCategorys: CategoryVO[] = [];
+
+    for (const item of expendCategorys) {
+      if (item.enable) {
+        enableExpendCategorys.push(item);
+      } else {
+        disableExpendCategorys.push(item);
+      }
+    }
+
+    enableExpendCategorys.sort((a, b) => a.sort - b.sort);
+
+    return {
+      enableIncomeCategorys,
+      disableIncomeCategorys,
+      enableExpendCategorys,
+      disableExpendCategorys
+    }
+  })
+
+  const test = useCallback(() => {
+    console.log('enableIncomeCategorys', enableIncomeCategorys);
+    console.log('disableIncomeCategorys', disableIncomeCategorys);
+    console.log('enableExpendCategorys', enableExpendCategorys);
+    console.log('disableExpendCategorys', disableExpendCategorys);
+  }, [enableIncomeCategorys, disableIncomeCategorys, enableExpendCategorys, disableExpendCategorys]);
+
   const currentCategoryList = useMemo<CategoryVO[]>(() => {
-    return tab === CategoryTypeEnum.INCOME ? incomeCategorys : expendCategorys;
-  }, [incomeCategorys, expendCategorys, tab]);
+    const list = tab === CategoryTypeEnum.INCOME ? enableIncomeCategorys : enableExpendCategorys;
 
+    return list.filter(i => i.enable === CategoryEnableEnum.ENABLE);
+  }, [tab, enableIncomeCategorys, enableExpendCategorys]);
 
-
-  const noSelectedCategory = useMemo<CategoryVO[]>(() => {
-    return []
-  }, [])
-
-  const test = () => {
-    console.log('currentCategory: ', currentCategoryList);
-  }
+  const currentNoSelectCategoryList = useMemo<CategoryVO[]>(() => {
+    const list = tab === CategoryTypeEnum.INCOME ? disableIncomeCategorys : disableExpendCategorys;
+    return list.filter(i => i.enable === CategoryEnableEnum.DISABLE);
+  }, [tab, enableIncomeCategorys, enableExpendCategorys]);
 
   // const expenditureIcons = useStore((s) => s.userInfo.category.expenditureList);
   // const incomeIcons = useStore((s) => s.userInfo.category.incomeList);
@@ -112,6 +148,10 @@ export default function CategorySetting() {
   //   [/*setUserCategory*/]
   // );
 
+  const handlerUpdateCategory = useCallback(async (newCategorys: CategoryVO[]) => {
+    // const res = 
+  }, [])
+
   const handleDragEnd = useCallback((event: DragEndEvent) => {
     if (event.canceled) return;
     const { source } = event.operation;
@@ -123,9 +163,13 @@ export default function CategorySetting() {
         const [moveItem] = newItems.splice(initialIndex, 1);
         newItems.splice(index, 0, moveItem);
         console.log(newItems.map(i => i.title).join('、'));
+        handlerUpdateCategory(newItems);
       }
     }
-  }, [currentCategoryList]);
+  }, [currentCategoryList, handlerUpdateCategory]);
+
+  
+
   // const handleDragEnd = useCallback(
   //   (event: DragEndEvent) => {
   //     const { active, over } = event;
@@ -264,6 +308,8 @@ export default function CategorySetting() {
         类别设置
       </NavBar>
 
+      <button style={{position: 'fixed', top: 0, right: 0, zIndex: 10}} onClick={test}>测试</button>
+
       <div className="tabs">
         <Segmented
           value={tab}
@@ -275,7 +321,6 @@ export default function CategorySetting() {
             { label: '收入', value: CategoryTypeEnum.INCOME },
           ]}
         />
-        <button style={{ position: 'fixed', top: 0, right: 0 }} onClick={test}>测试</button>
       </div>
 
       <div className="category-list-wrapper">
@@ -298,11 +343,11 @@ export default function CategorySetting() {
         </DragDropProvider>
       </div>
 
-      {noSelectedCategory.length > 0 && (
+      {currentNoSelectCategoryList.length > 0 && (
         <div className="category-list-wrapper">
           <h3 className="more-title">更多类别</h3>
           <ul className="more-category-list">
-            {noSelectedCategory.map((item) => (
+            {currentNoSelectCategoryList.map((item) => (
               <li className="category-item" key={item.id}>
                 <div
                   className="operation-icon-wrapper"

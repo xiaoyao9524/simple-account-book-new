@@ -1,9 +1,13 @@
+import { useNavigate } from 'react-router';
 import { ResponseCodeEnum } from '@/enums/responseCodeEnum';
 // import type {BaseResponse} from '@/types/base'
 import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse } from 'axios';
 
 import type { BaseResponse } from '@/types/baseResponse'
 import { Toast } from 'antd-mobile';
+
+import useTokenStore from '@/store/useTokenStore';
+import useUserStore from '@/store/useUserStore';
 
 const instance: AxiosInstance = axios.create({
   baseURL: '/api',
@@ -25,6 +29,15 @@ export async function request<T>(config: AxiosRequestConfig) {
     const res = await instance<BaseResponse<T>>(config);
 
     switch (res.data.code) {
+      // case ResponseCodeEnum.TOKEN_EXPIRE: {
+      //   const clearToken = useTokenStore.getState().clearToken;
+      //   const clearUserInfo = useUserStore.getState().clearUserInfo;
+
+      //   clearToken();
+      //   clearUserInfo();
+
+      //   break
+      // }
       case ResponseCodeEnum.FAIL: {
         if (res.config.custom_handler_err_res) {
           return res.data;
