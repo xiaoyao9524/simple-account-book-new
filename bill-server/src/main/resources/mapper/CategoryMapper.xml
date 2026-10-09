@@ -57,6 +57,11 @@
         ORDER BY u_c.sort ASC
     </select>
 
+    <insert id="insertCategory" useGeneratedKeys="true" keyProperty="category.id">
+        INSERT INTO category (u_id, `type`, title, icon)
+        VALUES (#{uId}, #{category.type}, #{category.title}, #{category.icon})
+    </insert>
+
     <update id="batchUpdateCategory">
         UPDATE category
         SET title = CASE id
@@ -74,4 +79,12 @@
             #{item.id}
         </foreach>
     </update>
+
+    <select id="countByTitleTypeAndUIdOrSystem" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM category
+        WHERE title = #{title}
+        AND type = #{type}
+        AND (u_id = #{uId} OR u_id IS NULL)
+    </select>
 </mapper>

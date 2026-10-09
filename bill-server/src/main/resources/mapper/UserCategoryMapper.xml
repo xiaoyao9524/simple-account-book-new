@@ -13,6 +13,11 @@
         <result column="update_time" property="updateTime"/>
     </resultMap>
 
+    <insert id="insertOne" useGeneratedKeys="true" keyProperty="uc.id">
+        INSERT INTO user_category (u_id, category_id, enable, sort)
+        VALUES (#{uc.uId}, #{uc.categoryId}, #{uc.enable}, #{uc.sort})
+    </insert>
+
     <insert id="batchInsertDefaultCategories">
         INSERT INTO user_category (u_id, category_id)
         VALUES
@@ -37,6 +42,21 @@
             #{id}
         </foreach>
         AND u_id = #{uId}
+    </select>
+
+    <select id="queryMaxSortByUId" resultType="java.lang.Integer">
+        SELECT MAX(uc.`sort`)
+        FROM user_category uc
+        INNER JOIN category c
+        ON uc.category_id = c.id
+        WHERE uc.u_id = #{uId}
+        AND c.type = #{type}
+    </select>
+
+    <select id="queryByUId" resultMap="userCategoryResultMap">
+        SELECT id, u_id, category_id, enable, sort, create_time, update_time
+        FROM user_category
+        WHERE u_id = #{uId}
     </select>
 
     <update id="batchUpdateUserCategory">

@@ -5,7 +5,7 @@ import jakarta.validation.ConstraintValidatorContext;
 
 import java.util.regex.Pattern;
 
-public class ChineseAwareLengthValidator implements ConstraintValidator<ChineseAwareLength, String> {
+public class CategoryTitleLengthValidator implements ConstraintValidator<CategoryTitleLength, String> {
 
     private static final Pattern ALLOWED = Pattern.compile("^[\\u4e00-\\u9fa5a-zA-Z0-9]+$");
     private static final Pattern HAS_CHINESE = Pattern.compile(".*[\\u4e00-\\u9fa5].*");

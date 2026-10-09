@@ -1,5 +1,6 @@
 package com.xy.simple_accountbook.bill.controller;
 
+import com.xy.simple_accountbook.bill.dto.request.category.InsertCategoryRequest;
 import com.xy.simple_accountbook.bill.entity.vo.BaseResponse;
 import com.xy.simple_accountbook.bill.entity.vo.CategoryVO;
 import com.xy.simple_accountbook.bill.service.impl.CategoryServiceImpl;
@@ -27,6 +28,12 @@ public class CategoryController {
     @PostMapping("/category/updateUserCategory")
     public BaseResponse<Void> updateUserCategory (@RequestBody @Valid List<CategoryVO> categoryVos) {
         categoryService.updateUserCategory(categoryVos);
+        return BaseResponse.success(null);
+    }
+
+    @PostMapping("/category/insertCategory")
+    public BaseResponse<Void> insertCategory (@RequestBody @Valid InsertCategoryRequest request) {
+        categoryService.insertCategory(request);
         return BaseResponse.success(null);
     }
 }

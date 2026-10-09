@@ -1,5 +1,6 @@
 package com.xy.simple_accountbook.bill.common.enums;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
@@ -17,6 +18,7 @@ public enum CategoryTypeEnum {
         this.desc = desc;
     }
 
+    @JsonCreator
     public static CategoryTypeEnum fromValue(Integer value) {
         if (value == null) {
             return null;
