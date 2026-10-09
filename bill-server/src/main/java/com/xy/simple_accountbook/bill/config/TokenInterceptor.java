@@ -58,7 +58,7 @@ public class TokenInterceptor implements HandlerInterceptor {
     private void writeError(HttpServletResponse response, String message) throws Exception {
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        BaseResponse<Void> baseResponse = BaseResponse.fail(message);
+        BaseResponse<Void> baseResponse = BaseResponse.tokenExpire(message);
         response.getWriter().write(jsonMapper.writeValueAsString(baseResponse));
     }
 }

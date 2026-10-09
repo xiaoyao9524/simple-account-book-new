@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface CategoryService {
     List<CategoryVO> queryUserCategory();
+    void updateUserCategory(List<CategoryVO> categoryVos);
 }

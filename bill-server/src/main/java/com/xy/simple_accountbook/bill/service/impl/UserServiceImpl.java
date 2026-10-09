@@ -9,6 +9,7 @@ import com.xy.simple_accountbook.bill.entity.UserCategoryEntity;
 import com.xy.simple_accountbook.bill.entity.vo.LoginVO;
 import com.xy.simple_accountbook.bill.entity.vo.UserVO;
 import com.xy.simple_accountbook.bill.mapper.CategoryMapper;
+import com.xy.simple_accountbook.bill.mapper.UserCategoryMapper;
 import com.xy.simple_accountbook.bill.mapper.UserMapper;
 import com.xy.simple_accountbook.bill.service.TokenService;
 import com.xy.simple_accountbook.bill.service.UserService;
@@ -35,6 +36,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private CategoryMapper categoryMapper;
+    @Autowired
+    private UserCategoryMapper userCategoryMapper;
 
     @Override
     public UserVO register(UserRegisterRequest request) {
@@ -61,7 +64,7 @@ public class UserServiceImpl implements UserService {
             return userCategoryEntity;
         }).collect(Collectors.toList());
 
-        categoryMapper.batchInsertDefaultCategories(userCategoryEntitys);
+        userCategoryMapper.batchInsertDefaultCategories(userCategoryEntitys);
 
         return UserVO.transferEntityToUserVO(userEntity);
     }
@@ -79,7 +82,7 @@ public class UserServiceImpl implements UserService {
             return userCategoryEntity;
         }).collect(Collectors.toList());
 
-        return categoryMapper.batchInsertDefaultCategories(userCategoryEntitys);
+        return userCategoryMapper.batchInsertDefaultCategories(userCategoryEntitys);
     }
 
     @Override

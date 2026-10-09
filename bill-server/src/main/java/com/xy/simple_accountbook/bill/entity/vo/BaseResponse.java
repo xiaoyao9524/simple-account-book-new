@@ -34,4 +34,14 @@ public class BaseResponse<T> {
 
         return baseResponse;
     }
+
+    public static BaseResponse tokenExpire (String message) {
+        BaseResponse baseResponse = new BaseResponse();
+
+        baseResponse.setCode(ResponseCodeEnum.TOKEN_EXPIRE.getCode());
+
+        baseResponse.setMessage(message);
+
+        return baseResponse;
+    }
 }

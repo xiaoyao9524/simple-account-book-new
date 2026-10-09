@@ -1,56 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.xy.simple_accountbook.bill.mapper.CategoryMapper">
-    <resultMap id="categoryResultMap" type="com.xy.simple_accountbook.bill.entity.CategoryEntity">
+<mapper namespace="com.xy.simple_accountbook.bill.mapper.UserCategoryMapper">
+    <resultMap id="userCategoryResultMap" type="com.xy.simple_accountbook.bill.entity.UserCategoryEntity">
         <id column="id" property="id"/>
         <result column="u_id" property="uId"/>
-        <result column="type" property="type"
-                typeHandler="com.xy.simple_accountbook.bill.handler.CategoryTypeHandler"/>
-        <result column="title" property="title"/>
-        <result column="icon" property="icon"/>
-        <result column="create_time" property="createTime"/>
-        <result column="update_time" property="updateTime"/>
-    </resultMap>
-
-    <resultMap id="categoryVOResultMap" type="com.xy.simple_accountbook.bill.entity.vo.CategoryVO">
-        <id column="id" property="id"/>
-        <result column="u_id" property="uId"/>
-        <result column="type" property="type"
-                typeHandler="com.xy.simple_accountbook.bill.handler.CategoryTypeHandler"/>
-        <result column="title" property="title"/>
-        <result column="icon" property="icon"/>
-        <result column="enable" property="enable"/>
+        <result column="category_id" property="categoryId"/>
+        <result column="enable" property="enable"
+                typeHandler="com.xy.simple_accountbook.bill.handler.UserCategoryEnableHandler"/>
         <result column="sort" property="sort"/>
         <result column="create_time" property="createTime"/>
         <result column="update_time" property="updateTime"/>
     </resultMap>
 
-    <select id="queryDefaultCategories"
-            resultMap="categoryResultMap">
-        SELECT id, u_id, title, icon, type, create_time, update_time
-        FROM category
-        WHERE u_id IS NULL
-        ORDER BY id ASC
-    </select>
-
     <insert id="batchInsertDefaultCategories">
         INSERT INTO user_category (u_id, category_id)
         VALUES
-            <foreach collection="list" item="item" separator=",">
-                (#{item.uId}, #{item.categoryId})
-            </foreach>
+        <foreach collection="list" item="item" separator=",">
+            (#{item.uId}, #{item.categoryId})
+        </foreach>
     </insert>
 
-    <select id="queryUserCategories" resultMap="categoryVOResultMap">
-        SELECT c.id, c.title, c.icon, c.type, u_c.enable, u_c.sort
-        FROM user_category u_c
-        INNER JOIN category c ON u_c.category_id = c.id
-        WHERE u_c.u_id = #{userId}
-        ORDER BY u_c.sort ASC
+    <select id="findByCategoryIdAndUid"
+            resultMap="userCategoryResultMap">
+        SELECT id, u_id, category_id, enable, `sort`, create_time, update_time
+        FROM user_category
+        WHERE category_id = #{categoryId}
+          AND u_id = #{uId}
     </select>
 
-    <update id="updateUserCategory" parameterType="com.xy.simple_accountbook.bill.entity.vo.CategoryVO">
+    <select id="queryByCategoryIdsAndUid" resultMap="userCategoryResultMap">
+        SELECT id, u_id, category_id, enable, `sort`, create_time, update_time
+        FROM user_category
+        WHERE category_id IN
+        <foreach collection="categoryIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        AND u_id = #{uId}
+    </select>
 
+    <update id="batchUpdateUserCategory">
+        UPDATE user_category
+        SET enable = CASE id
+        <foreach collection="categoryList" item="item">
+            WHEN #{item.id} THEN #{item.enable}
+        </foreach>
+        END,
+        sort = CASE id
+        <foreach collection="categoryList" item="item">
+            WHEN #{item.id} THEN #{item.sort}
+        </foreach>
+        END
+
+        WHERE id IN
+        <foreach collection="categoryList" item="item" open="(" separator="," close=")">
+            #{item.id}
+        </foreach>
     </update>
 </mapper>

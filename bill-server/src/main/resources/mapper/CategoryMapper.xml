@@ -13,6 +13,25 @@
         <result column="update_time" property="updateTime"/>
     </resultMap>
 
+    <resultMap id="categoryVOResultMap" type="com.xy.simple_accountbook.bill.entity.vo.CategoryVO">
+        <id column="id" property="id"/>
+        <result column="u_id" property="uId"/>
+        <result column="type" property="type"
+                typeHandler="com.xy.simple_accountbook.bill.handler.CategoryTypeHandler"/>
+        <result column="title" property="title"/>
+        <result column="icon" property="icon"/>
+        <result column="enable" property="enable"/>
+        <result column="sort" property="sort"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <select id="findCategoryById" resultMap="categoryResultMap">
+        SELECT id, u_id, title, icon,type, create_time, update_time
+        FROM category
+        WHERE id = #{id}
+    </select>
+
     <select id="queryDefaultCategories"
             resultMap="categoryResultMap">
         SELECT id, u_id, title, icon, type, create_time, update_time
@@ -21,19 +40,38 @@
         ORDER BY id ASC
     </select>
 
-    <insert id="batchInsertDefaultCategories">
-        INSERT INTO user_category (u_id, category_id)
-        VALUES
-            <foreach collection="list" item="item" separator=",">
-                (#{item.uId}, #{item.categoryId})
-            </foreach>
-    </insert>
+    <select id="queryByIds" resultMap="categoryResultMap">
+        SELECT id, u_id, type, title, icon, create_time, update_time
+        FROM category
+        WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
 
-    <select id="queryUserCategories">
-        SELECT c.id, c.title, c.icon, c.type
+    <select id="queryUserCategories" resultMap="categoryVOResultMap">
+        SELECT c.id, c.title, c.icon, c.type, u_c.enable, u_c.sort
         FROM user_category u_c
         INNER JOIN category c ON u_c.category_id = c.id
         WHERE u_c.u_id = #{userId}
-        ORDER BY c.id ASC
+        ORDER BY u_c.sort ASC
     </select>
+
+    <update id="batchUpdateCategory">
+        UPDATE category
+        SET title = CASE id
+        <foreach collection="categoryList" item="item">
+            WHEN #{item.id} THEN #{item.title}
+        </foreach>
+        END,
+        icon = CASE id
+        <foreach collection="categoryList" item="item">
+            WHEN #{item.id} THEN #{item.icon}
+        </foreach>
+        END
+        WHERE id IN
+        <foreach collection="categoryList" item="item" open="(" separator="," close=")">
+            #{item.id}
+        </foreach>
+    </update>
 </mapper>
