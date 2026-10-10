@@ -11,14 +11,16 @@ export interface CategoryVO {
   sort: number
 }
 
-/** old */
-
 export interface CategoryItem {
   readonly id: number;
-  categoryType: 0 | 1;
+  type: CategoryType;
   title: string;
   icon: string;
 }
+
+export type InsertCategoryProps = Omit<CategoryItem, 'id'>;
+
+/** old */
 
 export interface CategoryItemWithSortIndex extends CategoryItem {
   sortIndex: number;
@@ -31,11 +33,7 @@ export interface AllCategoryListResult {
 
 export type GetAllCategoryListResult = BaseResult<AllCategoryListResult>;
 
-export interface InsertCategoryProps {
-  categoryType: 0 | 1;
-  title: string;
-  icon: string;
-}
+
 
 export type InsertCategoryResultProps = BaseResult<{
   expenditureList: CategoryItemWithSortIndex[];

@@ -83,7 +83,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateUserCategory(List<CategoryVO> categoryVos) {
+    public void batchUpdateCategory(List<CategoryVO> categoryVos) {
         if (categoryVos == null || categoryVos.isEmpty()) {
             throw new BusinessException(ResponseCodeEnum.BUSINESS_ERROR, "无参数");
         }

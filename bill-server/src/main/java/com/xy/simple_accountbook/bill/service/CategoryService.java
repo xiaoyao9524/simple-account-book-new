@@ -8,5 +8,5 @@ import java.util.List;
 public interface CategoryService {
     List<CategoryVO> queryUserCategory();
     void insertCategory(InsertCategoryRequest category);
-    void updateUserCategory(List<CategoryVO> categoryVos);
+    void batchUpdateCategory(List<CategoryVO> categoryVos);
 }

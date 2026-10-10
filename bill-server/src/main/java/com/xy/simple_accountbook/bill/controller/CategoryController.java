@@ -25,9 +25,9 @@ public class CategoryController {
         return BaseResponse.success(categoryVOList);
     }
 
-    @PostMapping("/category/updateUserCategory")
-    public BaseResponse<Void> updateUserCategory (@RequestBody @Valid List<CategoryVO> categoryVos) {
-        categoryService.updateUserCategory(categoryVos);
+    @PostMapping("/category/batchUpdateCategory")
+    public BaseResponse<Void> batchUpdateCategory (@RequestBody @Valid List<CategoryVO> categoryVos) {
+        categoryService.batchUpdateCategory(categoryVos);
         return BaseResponse.success(null);
     }
 

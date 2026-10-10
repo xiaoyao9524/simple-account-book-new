@@ -22,13 +22,13 @@ export default function Bookkeeping() {
   const updateCategoryList = useCategoryStore(state => state.updateList);
 
   const [currentIcon, setCurrentIcon] = useState<CategoryVO | null>(null);
-  const [tab, setTab] = useState<CategoryType>(CategoryTypeEnum.EXPEND);
+  const [type, setType] = useState<CategoryType>(CategoryTypeEnum.EXPEND);
   const calculatorInstance = useRef<CalculatorRefProps>(null);
   // const [category, setCategory] = useState<CategoryItem | undefined>(undefined);
 
   const currentIcons = useMemo(
-    () => (tab === CategoryTypeEnum.INCOME ? incomeCategorys : expendCategorys),
-    [tab, incomeCategorys, expendCategorys]
+    () => (type === CategoryTypeEnum.INCOME ? incomeCategorys : expendCategorys),
+    [type, incomeCategorys, expendCategorys]
   );
 
   useEffect(() => {
@@ -122,9 +122,9 @@ export default function Bookkeeping() {
         <div>
           <div className="tabs">
             <Segmented
-              value={tab}
+              value={type}
               onChange={(val) => {
-                setTab(val as CategoryType);
+                setType(val as CategoryType);
               }}
               options={[
                 { label: '支出', value: CategoryTypeEnum.EXPEND },
@@ -149,7 +149,7 @@ export default function Bookkeeping() {
               ))}
               <li
                 className="icon-item"
-                onClick={() => navigate('/categorySetting', { state: { tab } })}
+                onClick={() => navigate(`/categorySetting`, { state: { type } })}
               >
                 <div className="icon-container">
                   <span className="icon iconfont-base icon-shezhi" />

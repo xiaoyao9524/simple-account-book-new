@@ -3,7 +3,6 @@ import type { CategoryVO } from '@/types/category';
 import type {
   GetAllCategoryListResult,
   InsertCategoryProps,
-  InsertCategoryResultProps,
   UpdateCategoryParams,
   UpdateCategoryResult,
   GetBillListByCategoryIdResult,
@@ -31,6 +30,23 @@ export const updateUserCategory = (categorys: CategoryVO[]) => (
   })
 )
 
+export const insertCategory = (data: InsertCategoryProps) => (
+  request({
+    method: 'post',
+    url: '/category/insertCategory',
+    data,
+  })
+)
+
+export const batchUpdateCategory = (data: CategoryVO[]) => (
+  request({
+    method: 'post',
+    url: '/category/batchUpdateCategory',
+    data
+  })
+)
+
+
 /**old */
 
 export const getAllCategoryList = () =>
@@ -39,12 +55,7 @@ export const getAllCategoryList = () =>
     url: '/category/getAllCategoryList',
   });
 
-export const insertCategory = (data: InsertCategoryProps) =>
-  request<InsertCategoryResultProps>({
-    method: 'post',
-    url: '/category/insert',
-    data,
-  });
+
 
 export const updateCategory = (data: UpdateCategoryParams) =>
   request<UpdateCategoryResult>({

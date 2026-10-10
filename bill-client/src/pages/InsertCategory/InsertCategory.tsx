@@ -1,12 +1,12 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 import { } from 'react-hook-form';
-import { Form, Input, Button, Toast } from 'antd-mobile';
+import { Form, Input, Button, Segmented, Toast } from 'antd-mobile';
 import { type FormInstance } from 'antd-mobile/es/components/form'
-import { useStore } from '@/store/useStore';
+import useCategoryStore from '@/store/useCategoryStore';
 import { insertCategory } from '@/api/category';
-import type { InsertCategoryProps } from '@/types/category';
 import NavBar from '@/components/NavBar/NavBar';
+import { CategoryTypeEnum, type CategoryType, checkIsCategoryType } from '@/enums/categoryEnum'
 import './style.scss';
 
 const iconList = [
@@ -24,41 +24,35 @@ const iconList = [
   { title: '其它', list: ['jiaofei', 'qita', 'shejiao', 'lijin', 'juanzeng', 'zhuanzhang', 'caipiao', 'gongzi', 'licai', 'jianzhi'] },
 ];
 
+export interface InsertCategoryFormData {
+  title: string;
+}
+
 export default function InsertCategory() {
-  // const navigate = useNavigate();
-  // const location = useLocation();
-  // const state = location.state as { type?: '支出' | '收入' } | null;
-  // const setUserCategory = useStore((s) => s.setUserCategory);
-  const [form] = Form.useForm()
+  const navigate = useNavigate();
+  // const [searchParams] = useSearchParams();
+  const location = useLocation();
+  const updateCategory = useCategoryStore((s) => s.updateList);
+
+  const [form] = Form.useForm<InsertCategoryFormData>()
   const formInstance = useRef<FormInstance>(null);
+  const [type, setType] = useState<CategoryType>(() => {
+    // const localType = searchParams.get('type');
+    const localType = location.state?.type;
+
+    if (!localType) {
+      return CategoryTypeEnum.EXPEND;
+    }
+
+    const type = Number(localType) as CategoryType;
+
+    if (!checkIsCategoryType(type)) {
+      return CategoryTypeEnum.EXPEND;
+    }
+
+    return type;
+  });
   const [currentIcon, setCurrentIcon] = useState(iconList[0].list[0]);
-  // const categoryType: 0 | 1 = state?.type === '收入' ? 0 : 1;
-  // const { register, handleSubmit, formState: { errors } } = useForm<{ title: string }>();
-
-  // useEffect(() => {
-  //   if (!state || !state.type) {
-  //     navigate('/', { replace: true });
-  //   }
-  // }, [state, navigate]);
-
-  // async function handlerSave(data: { title: string }) {
-  //   const params: InsertCategoryProps = {
-  //     title: data.title,
-  //     categoryType,
-  //     icon: currentIcon,
-  //   };
-  //   try {
-  //     const res = await insertCategory(params);
-  //     if (res.status === 200) {
-  //       setUserCategory(res.data);
-  //       navigate(-1);
-  //     } else {
-  //       Toast.show({ content: res.message, icon: 'fail' });
-  //     }
-  //   } catch (err) {
-  //     Toast.show({ content: (err as Error).message, icon: 'fail' });
-  //   }
-  // }
 
   const handlerSave = async () => {
     if (!formInstance.current) {
@@ -68,13 +62,27 @@ export default function InsertCategory() {
 
   }
 
-  const handlerFinish = async (values: any) => {
-    console.log('v: ', values);
+  const handlerFinish = async (values: InsertCategoryFormData) => {
+    const param = {
+      type,
+      title: values.title,
+      icon: currentIcon,
+    }
+
+    console.log('param: ', param);
+
+    const res = await insertCategory(param);
+
+    if (res) {
+      Toast.show({ content: '新增类别成功', icon: 'success' });
+      updateCategory();
+      navigate(-1);
+    }
   }
 
   const validateTitle = (_: unknown, value: string) => {
     if (!value) {
-      return Promise.resolve(); // .reject(new Error('请输入类别名称'));
+      return Promise.resolve();
     }
 
     const hasChineseRe = /[\u4e00-\u9fa5]/.test(value);
@@ -97,35 +105,37 @@ export default function InsertCategory() {
         新增类别
       </NavBar>
 
-      <Form
-        className="form-area"
-        layout='horizontal'
-        form={form}
-        name="form"
-        ref={formInstance}
-        onFinish={handlerFinish}
-      >
-        <Form.Item name="title" label="类别名称"
-          rules={[
-            { required: true, message: '请输入类别名称' },
-            { type: 'string', min: 1, max: 6, message: '类别名称长度为1-6个字符！' },
-            { validator: validateTitle }
-          ]}
+      <div className="form-area">
+        <Form
+          layout='horizontal'
+          form={form}
+          name="form"
+          ref={formInstance}
+          onFinish={handlerFinish}
         >
-          <Input placeholder="类别名称" />
-        </Form.Item>
-      </Form>
-
-      {/* <form className="form-area" >
-        <div className="input-row">
-          <label className="label">类别名称</label>
-          <input
-            className="input"
-            placeholder="类别名称(不超过四个汉字)"
+          <Form.Item name="title" label="类别名称"
+            rules={[
+              { required: true, message: '请输入类别名称' },
+              { type: 'string', min: 1, max: 6, message: '类别名称长度为1-6个字符！' },
+              { validator: validateTitle }
+            ]}
+          >
+            <Input placeholder="类别名称" />
+          </Form.Item>
+        </Form>
+        <div className="tabs">
+          <Segmented
+            value={type}
+            onChange={(val) => {
+              setType(val as CategoryType);
+            }}
+            options={[
+              { label: '支出', value: CategoryTypeEnum.EXPEND },
+              { label: '收入', value: CategoryTypeEnum.INCOME },
+            ]}
           />
         </div>
-        <p className="error">请输入xxx</p>
-      </form> */}
+      </div>
 
       <ul className="icon-list-wrapper">
         {iconList.map((i) => (

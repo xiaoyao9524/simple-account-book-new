@@ -12,7 +12,7 @@ export default function SortableCategoryItem({
   id,
   title,
   icon,
-  categoryType,
+  type,
   index,
   onDelete,
 }: SortableCategoryItemProps) {
@@ -34,7 +34,7 @@ export default function SortableCategoryItem({
       <div
         className="operation-icon-wrapper"
         onClick={() => {
-          onDelete?.({ id, categoryType, title, icon });
+          onDelete?.({ id, type, title, icon });
         }}
       >
         <span className="icon iconfont-base icon-minus" />
