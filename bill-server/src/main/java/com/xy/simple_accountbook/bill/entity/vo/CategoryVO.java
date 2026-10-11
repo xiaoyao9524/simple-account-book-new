@@ -9,11 +9,15 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
 @JsonPropertyOrder({"id", "type", "title", "icon", "enable", "sort"})
 public class CategoryVO extends BaseVO {
     @NotNull(message = "类别id不能为空")
     private Long id;
+
+    private Long uId;
 
     @NotNull(message = "类别不能为空")
     private CategoryTypeEnum type;

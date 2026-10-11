@@ -11,6 +11,7 @@
         <result column="icon" property="icon"/>
         <result column="create_time" property="createTime"/>
         <result column="update_time" property="updateTime"/>
+        <result column="deleted_at" property="deletedAt" />
     </resultMap>
 
     <resultMap id="categoryVOResultMap" type="com.xy.simple_accountbook.bill.entity.vo.CategoryVO">
@@ -24,36 +25,40 @@
         <result column="sort" property="sort"/>
         <result column="create_time" property="createTime"/>
         <result column="update_time" property="updateTime"/>
+        <result column="deleted_at" property="deletedAt" />
     </resultMap>
 
     <select id="findCategoryById" resultMap="categoryResultMap">
-        SELECT id, u_id, title, icon,type, create_time, update_time
+        SELECT id, u_id, title, icon, type, create_time, update_time, deleted_at
         FROM category
         WHERE id = #{id}
+        AND deleted_at IS NULL
+
     </select>
 
     <select id="queryDefaultCategories"
             resultMap="categoryResultMap">
-        SELECT id, u_id, title, icon, type, create_time, update_time
+        SELECT id, u_id, title, icon, type, create_time, update_time, deleted_at
         FROM category
-        WHERE u_id IS NULL
+        WHERE u_id IS NULL AND deleted_at IS NULL
         ORDER BY id ASC
     </select>
 
     <select id="queryByIds" resultMap="categoryResultMap">
-        SELECT id, u_id, type, title, icon, create_time, update_time
+        SELECT id, u_id, type, title, icon, create_time, update_time, deleted_at
         FROM category
         WHERE id IN
         <foreach collection="ids" item="id" open="(" separator="," close=")">
             #{id}
         </foreach>
+        AND deleted_at IS NULL
     </select>
 
     <select id="queryUserCategories" resultMap="categoryVOResultMap">
-        SELECT c.id, c.title, c.icon, c.type, u_c.enable, u_c.sort
+        SELECT c.id, c.u_id, c.title,  c.icon, c.type, u_c.enable, u_c.sort
         FROM user_category u_c
         INNER JOIN category c ON u_c.category_id = c.id
-        WHERE u_c.u_id = #{userId}
+        WHERE u_c.u_id = #{userId} AND u_c.deleted_at IS NULL AND c.deleted_at IS NULL
         ORDER BY u_c.sort ASC
     </select>
 
@@ -75,9 +80,10 @@
         </foreach>
         END
         WHERE id IN
-        <foreach collection="categoryList" item="item" open="(" separator="," close=")">
-            #{item.id}
-        </foreach>
+            <foreach collection="categoryList" item="item" open="(" separator="," close=")">
+                #{item.id}
+            </foreach>
+        AND deleted_at IS NULL
     </update>
 
     <select id="countByTitleTypeAndUIdOrSystem" resultType="java.lang.Integer">
@@ -86,5 +92,6 @@
         WHERE title = #{title}
         AND type = #{type}
         AND (u_id = #{uId} OR u_id IS NULL)
+        AND deleted_at IS NULL
     </select>
 </mapper>

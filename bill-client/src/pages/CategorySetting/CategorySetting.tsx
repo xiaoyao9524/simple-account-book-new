@@ -9,7 +9,8 @@ import useCategoryStore from '@/store/useCategoryStore'
 
 import { CategoryTypeEnum, type CategoryType, CategoryEnableEnum, checkIsCategoryType } from '@/enums/categoryEnum'
 import type {
-  CategoryVO
+  CategoryVO,
+  CategoryItem
 } from '@/types/category';
 import { batchUpdateCategory } from '@/api/category'
 
@@ -97,6 +98,36 @@ export default function CategorySetting() {
     }
   }, [updateCategory])
 
+  const handlerEnableCategory = useCallback(async (item: CategoryVO) => {
+    const maxSort = Math.max(...currentCategoryList.map(i => i.sort));
+    const res = await batchUpdateCategory([
+      {
+        ...item,
+        enable: CategoryEnableEnum.ENABLE,
+        sort: maxSort + 1
+      }
+    ])
+
+    if (res) {
+      Toast.show({ content: '保存成功', icon: 'success' });
+      updateCategory();
+    }
+  }, [currentCategoryList, updateCategory]);
+
+  const handlerDisableCategory = useCallback(async (item: CategoryVO) => {
+    const res = await batchUpdateCategory([
+      {
+        ...item,
+        enable: CategoryEnableEnum.DISABLE
+      }
+    ])
+
+    if (res) {
+      Toast.show({ content: '保存成功', icon: 'success' });
+      updateCategory();
+    }
+  }, [updateCategory])
+
   const handleDragEnd = useCallback((event: DragEndEvent) => {
     if (event.canceled) return;
     const { source } = event.operation;
@@ -145,12 +176,9 @@ export default function CategorySetting() {
             {currentCategoryList.map((item, index) => (
               <SortableCategoryItem
                 key={item.id}
-                id={item.id}
+                {...item}
                 index={index}
-                title={item.title}
-                icon={item.icon}
-                type={item.type}
-                onDelete={() => {/*handlerDelCategoryClick(item)*/ }}
+                onDelete={handlerDisableCategory}
               />
             ))}
           </ul>
@@ -165,7 +193,7 @@ export default function CategorySetting() {
               <li className="category-item" key={item.id}>
                 <div
                   className="operation-icon-wrapper"
-                  onClick={() => {/*handlerAdd(item)*/ }}
+                  onClick={() => {handlerEnableCategory(item)}}
                 >
                   <span className="icon iconfont-base icon-add" />
                 </div>

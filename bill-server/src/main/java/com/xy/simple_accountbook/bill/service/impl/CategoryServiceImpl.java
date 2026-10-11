@@ -30,19 +30,12 @@ public class CategoryServiceImpl implements CategoryService {
     @Autowired
     private UserCategoryMapper userCategoryMapper;
 
-//    public List<CategoryEntity> queryDefaultCategories () {
-//        List<CategoryEntity> categoryEntitys = categoryMapper.queryDefaultCategories();
-//
-//        return categoryEntitys;
-//    }
-
     @Override
     public List<CategoryVO> queryUserCategory() {
         Long userId = UserContext.getUserId();
 
         List<CategoryVO> categoryList = categoryMapper.queryUserCategories(userId);
 
-//        List<CategoryVO> categoryVoList = categoryList.stream().map(CategoryVO :: transferEntityToCategoryVO).collect(Collectors.toList());
         return categoryList;
     }
 

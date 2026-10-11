@@ -1,23 +1,26 @@
-import {useRef} from 'react';
-import {useSortable} from '@dnd-kit/react/sortable';
-import type { CategoryItem as ICategoryItemProps } from '@/types/category';
+import { useRef } from 'react';
+import { useSortable } from '@dnd-kit/react/sortable';
+import type { CategoryVO } from '@/types/category';
 
-export interface SortableCategoryItemProps extends ICategoryItemProps {
-  id: number;
+export interface SortableCategoryItemProps extends CategoryVO {
   index: number;
-  onDelete?: (category: ICategoryItemProps) => void;
+  onDelete?: (category: CategoryVO) => void;
 }
 
-export default function SortableCategoryItem({
-  id,
-  title,
-  icon,
-  type,
-  index,
-  onDelete,
-}: SortableCategoryItemProps) {
+export default function SortableCategoryItem(props: SortableCategoryItemProps) {
+  const {
+    id,
+    uId,
+    title,
+    icon,
+    type,
+    sort,
+    enable,
+    index,
+    onDelete,
+  } = props;
   const draghandleRef = useRef<HTMLSpanElement>(null);
-  const {ref} = useSortable({
+  const { ref } = useSortable({
     id,
     index,
     handle: draghandleRef,
@@ -34,7 +37,15 @@ export default function SortableCategoryItem({
       <div
         className="operation-icon-wrapper"
         onClick={() => {
-          onDelete?.({ id, type, title, icon });
+          onDelete?.({
+            id,
+            uId,
+            title,
+            icon,
+            type,
+            sort,
+            enable
+          });
         }}
       >
         <span className="icon iconfont-base icon-minus" />
@@ -43,7 +54,7 @@ export default function SortableCategoryItem({
         <span className={`icon iconfont icon-${icon}`} />
       </div>
       <p className="category-title">
-        {title}
+        {title} {uId !== null && <span className="category-user-icon" style={{ color: '#ccc' }}>(自定义)</span>}
       </p>
       <div className="drag-sort-wrapper">
         <span ref={draghandleRef} className="icon iconfont-base icon-sort" />

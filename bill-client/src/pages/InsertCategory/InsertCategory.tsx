@@ -69,8 +69,6 @@ export default function InsertCategory() {
       icon: currentIcon,
     }
 
-    console.log('param: ', param);
-
     const res = await insertCategory(param);
 
     if (res) {

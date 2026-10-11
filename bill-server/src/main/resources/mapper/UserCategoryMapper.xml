@@ -11,6 +11,7 @@
         <result column="sort" property="sort"/>
         <result column="create_time" property="createTime"/>
         <result column="update_time" property="updateTime"/>
+        <result column="deleted_at" property="deletedAt"/>
     </resultMap>
 
     <insert id="insertOne" useGeneratedKeys="true" keyProperty="uc.id">
@@ -28,35 +29,47 @@
 
     <select id="findByCategoryIdAndUid"
             resultMap="userCategoryResultMap">
-        SELECT id, u_id, category_id, enable, `sort`, create_time, update_time
+        SELECT id,
+               u_id,
+               category_id,
+               enable,
+               `sort`,
+               create_time,
+               update_time,
+               deleted_at
         FROM user_category
         WHERE category_id = #{categoryId}
           AND u_id = #{uId}
+          AND deleted_at IS NULL
     </select>
 
     <select id="queryByCategoryIdsAndUid" resultMap="userCategoryResultMap">
-        SELECT id, u_id, category_id, enable, `sort`, create_time, update_time
+        SELECT id, u_id, category_id, enable, `sort`, create_time, update_time, deleted_at
         FROM user_category
         WHERE category_id IN
         <foreach collection="categoryIds" item="id" open="(" separator="," close=")">
             #{id}
         </foreach>
         AND u_id = #{uId}
+        AND deleted_at IS NULL
     </select>
 
     <select id="queryMaxSortByUId" resultType="java.lang.Integer">
         SELECT MAX(uc.`sort`)
         FROM user_category uc
-        INNER JOIN category c
-        ON uc.category_id = c.id
+                 INNER JOIN category c
+                            ON uc.category_id = c.id
         WHERE uc.u_id = #{uId}
-        AND c.type = #{type}
+          AND c.type = #{type}
+          AND c.deleted_at IS NULL
+          AND uc.deleted_at IS NULL
     </select>
 
     <select id="queryByUId" resultMap="userCategoryResultMap">
-        SELECT id, u_id, category_id, enable, sort, create_time, update_time
+        SELECT id, u_id, category_id, enable, `sort`, create_time, update_time, deleted_at
         FROM user_category
         WHERE u_id = #{uId}
+        AND deleted_at IS NULL
     </select>
 
     <update id="batchUpdateUserCategory">
@@ -76,5 +89,6 @@
         <foreach collection="categoryList" item="item" open="(" separator="," close=")">
             #{item.id}
         </foreach>
+        AND deleted_at IS NULL
     </update>
 </mapper>
