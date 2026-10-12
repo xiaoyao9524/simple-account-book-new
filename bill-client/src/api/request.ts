@@ -14,8 +14,24 @@ const instance: AxiosInstance = axios.create({
   timeout: 60_000,
 });
 
-instance.interceptors.response.use((response: AxiosResponse<BaseResponse<unknown>>) => {
-  return response;
+const handlerTokenExpire = () => {
+  const clearToken = useTokenStore.getState().clearToken;
+  const clearUserInfo = useUserStore.getState().clearUserInfo;
+
+  clearToken();
+  clearUserInfo();
+  window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname);
+}
+
+instance.interceptors.response.use((response: AxiosResponse<BaseResponse<unknown>>) => response, (error) => {
+  const status = error.response?.status;
+  console.log('status: ', status);
+
+  if (status === 401) {
+    handlerTokenExpire();
+  }
+
+  return Promise.reject(error);
 });
 
 instance.interceptors.request.use((config) => {

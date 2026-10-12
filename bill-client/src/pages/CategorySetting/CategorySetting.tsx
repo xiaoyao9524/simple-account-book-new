@@ -193,23 +193,27 @@ export default function CategorySetting() {
               <li className="category-item" key={item.id}>
                 <div
                   className="operation-icon-wrapper"
-                  onClick={() => {handlerEnableCategory(item)}}
+                  onClick={() => { handlerEnableCategory(item) }}
                 >
                   <span className="icon iconfont-base icon-add" />
                 </div>
                 <div className="category-icon-wrapper">
                   <span className={`icon iconfont icon-${item.icon}`} />
                 </div>
-                <p className="category-title">{item.title}</p>
-                <div className="del-btn-wrapper">
-                  <Button
-                    color="warning"
-                    size="small"
-                    onClick={() => {/*showAlert(item)*/ }}
-                  >
-                    删除
-                  </Button>
-                </div>
+                <p className="category-title">{item.title} {item.uId !== null && <span className="category-user-icon" style={{ color: '#ccc' }}>(自定义)</span>}</p>
+                {
+                  item.uId !== null && (
+                    <div className="del-btn-wrapper">
+                      <Button
+                        color="warning"
+                        size="small"
+                        onClick={() => {/*showAlert(item)*/ }}
+                      >
+                        删除
+                      </Button>
+                    </div>
+                  )
+                }
               </li>
             ))}
           </ul>

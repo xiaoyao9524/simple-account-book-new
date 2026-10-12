@@ -24,5 +24,6 @@ export function logout() {
   return request({
     method: 'post',
     url: '/user/logout',
+    custom_handler_err_res: true
   });
 }
