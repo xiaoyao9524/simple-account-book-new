@@ -46,6 +46,15 @@ export const batchUpdateCategory = (data: CategoryVO[]) => (
   })
 )
 
+export const batchDeleteCategory = (ids: number[]) => (
+  request({
+    method: 'post',
+    url: '/category/batchDeleteCategory',
+    data: {
+      ids
+    }
+  })
+)
 
 /**old */
 

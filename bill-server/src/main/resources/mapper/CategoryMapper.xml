@@ -36,14 +36,6 @@
 
     </select>
 
-    <select id="queryDefaultCategories"
-            resultMap="categoryResultMap">
-        SELECT id, u_id, title, icon, type, create_time, update_time, deleted_at
-        FROM category
-        WHERE u_id IS NULL AND deleted_at IS NULL
-        ORDER BY id ASC
-    </select>
-
     <select id="queryByIds" resultMap="categoryResultMap">
         SELECT id, u_id, type, title, icon, create_time, update_time, deleted_at
         FROM category
@@ -53,6 +45,16 @@
         </foreach>
         AND deleted_at IS NULL
     </select>
+
+    <select id="queryDefaultCategories"
+            resultMap="categoryResultMap">
+        SELECT id, u_id, title, icon, type, create_time, update_time, deleted_at
+        FROM category
+        WHERE u_id IS NULL AND deleted_at IS NULL
+        ORDER BY id ASC
+    </select>
+
+
 
     <select id="queryUserCategories" resultMap="categoryVOResultMap">
         SELECT c.id, c.u_id, c.title,  c.icon, c.type, u_c.enable, u_c.sort
@@ -94,4 +96,15 @@
         AND (u_id = #{uId} OR u_id IS NULL)
         AND deleted_at IS NULL
     </select>
+
+    <update id="batchDeleteCategory">
+        UPDATE category
+        SET deleted_at = NOW()
+        WHERE id IN
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+        AND deleted_at IS NULL
+        AND u_id = #{uId}
+    </update>
 </mapper>

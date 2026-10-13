@@ -25,4 +25,6 @@ public interface CategoryMapper {
     int batchUpdateCategory(@Param("categoryList") List<CategoryEntity> categoryList);
 
     int countByTitleTypeAndUIdOrSystem(@Param("uId") Long uId, @Param("title") String title, @Param("type")CategoryTypeEnum type);
+
+    int batchDeleteCategory(@Param("ids") List<Long> ids, @Param("uId") Long uId);
 }

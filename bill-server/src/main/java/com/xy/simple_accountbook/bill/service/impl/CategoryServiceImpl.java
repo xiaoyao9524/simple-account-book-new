@@ -41,7 +41,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void insertCategory (InsertCategoryRequest category) {
+    public void insertCategory(InsertCategoryRequest category) {
         Long uId = UserContext.getUserId();
 
         String title = category.getTitle();
@@ -151,5 +151,49 @@ public class CategoryServiceImpl implements CategoryService {
         categoryMapper.batchUpdateCategory(updateCategoryList);
 
         userCategoryMapper.batchUpdateUserCategory(updateUserCategoryList);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void batchDeleteCategory(List<Long> ids) {
+        Long uId = UserContext.getUserId();
+        // 先查出来所有的categoryEntity
+        List<CategoryEntity> delCategoryEntitys = categoryMapper.queryByIds(ids);
+        // 数量对不上 → 有 ID 不存在
+        if (delCategoryEntitys.size() != ids.size()) {
+            throw new BusinessException(ResponseCodeEnum.BUSINESS_ERROR, "部分分类不存在");
+        }
+        // 检查是否有默认分类和其他用户的分类
+        for (int i = 0; i < delCategoryEntitys.size(); i++) {
+            CategoryEntity delCategory = delCategoryEntitys.get(i);
+            Long _delUid = delCategory.getUId();
+
+            if (_delUid == null) {
+                throw new BusinessException(ResponseCodeEnum.BUSINESS_ERROR, "第\"" + i +"\"项为默认分类不可删除");
+            }
+            if (!uId.equals(_delUid)) {
+                throw new BusinessException(ResponseCodeEnum.BUSINESS_ERROR, "第\"" + i + "\"项不存在");
+            }
+        }
+
+        List<UserCategoryEntity> delUserCategoryEntitys = userCategoryMapper.queryByCategoryIdsAndUid(ids, uId);
+
+        if (delUserCategoryEntitys.isEmpty() || delUserCategoryEntitys.size() != delCategoryEntitys.size()) {
+            throw new BusinessException(ResponseCodeEnum.BUSINESS_ERROR, "部分分类不存在");
+        }
+
+//        sql中查出来的已经过滤过uid了，这里先不判断
+//        for (int i = 0; i < delUserCategoryEntitys.size();i++) {
+//            UserCategoryEntity delUserCategoryEntity = delUserCategoryEntitys.get(i);
+//
+//            if (!uId.equals(delUserCategoryEntity.getUId())) {
+//                throw new BusinessException(ResponseCodeEnum.BUSINESS_ERROR, "部分分类不存在");
+//            }
+//        }
+
+        List<Long> delUserCategoryIds = delUserCategoryEntitys.stream().map(UserCategoryEntity::getId).collect(Collectors.toList());
+
+        categoryMapper.batchDeleteCategory(ids, uId);
+        userCategoryMapper.batchDeleteUserCategory(delUserCategoryIds, uId);
     }
 }

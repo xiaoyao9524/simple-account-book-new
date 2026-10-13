@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router';
-import { Segmented, Toast, Button } from 'antd-mobile';
+import { Segmented, Toast, Button, Dialog } from 'antd-mobile';
 
 import { DragDropProvider, type DragEndEvent } from '@dnd-kit/react';
 import { isSortable } from '@dnd-kit/react/sortable';
@@ -12,7 +12,7 @@ import type {
   CategoryVO,
   CategoryItem
 } from '@/types/category';
-import { batchUpdateCategory } from '@/api/category'
+import { batchUpdateCategory, batchDeleteCategory } from '@/api/category'
 
 import NavBar from '@/components/NavBar/NavBar';
 import SortableCategoryItem from './components/SortableCategoryItem';
@@ -128,6 +128,49 @@ export default function CategorySetting() {
     }
   }, [updateCategory])
 
+  const handlerConfirmDel = useCallback(async (item: CategoryVO) => {
+    const res = await batchDeleteCategory([item.id]);
+
+    if (res) {
+      Toast.show({
+        content: "删除成功",
+        icon: 'success'
+      })
+      updateCategory();
+    }
+  }, [updateCategory])
+
+  const handlerDelDialog = useCallback(async (item: CategoryVO) => {
+    const dialog = Dialog.show({
+      content: '确定删除该类别吗？',
+      closeOnAction: true,
+      actions: [
+        [
+          {
+            key: 'cancel',
+            text: '取消',
+            style: {
+              background:' var(--background-color)',
+              boxShadow: 'none'
+            },
+            onClick: () => {
+              dialog.close();
+            }
+          },
+          {
+            key: 'delete',
+            text: '删除',
+            bold: true,
+            danger: true,
+            onClick: () => {
+              handlerConfirmDel(item);
+            }
+          }
+        ]
+      ]
+    })
+  }, [handlerConfirmDel]);
+
   const handleDragEnd = useCallback((event: DragEndEvent) => {
     if (event.canceled) return;
     const { source } = event.operation;
@@ -207,7 +250,7 @@ export default function CategorySetting() {
                       <Button
                         color="warning"
                         size="small"
-                        onClick={() => {/*showAlert(item)*/ }}
+                        onClick={() => { handlerDelDialog(item) }}
                       >
                         删除
                       </Button>
