@@ -12,6 +12,7 @@ import com.xy.simple_accountbook.bill.exception.BusinessException;
 import com.xy.simple_accountbook.bill.mapper.CategoryMapper;
 import com.xy.simple_accountbook.bill.mapper.UserCategoryMapper;
 import com.xy.simple_accountbook.bill.service.CategoryService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,12 +24,11 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
-    @Autowired
-    private CategoryMapper categoryMapper;
+    private final CategoryMapper categoryMapper;
 
-    @Autowired
-    private UserCategoryMapper userCategoryMapper;
+    private final UserCategoryMapper userCategoryMapper;
 
     @Override
     public List<CategoryVO> queryUserCategory() {
@@ -195,5 +195,10 @@ public class CategoryServiceImpl implements CategoryService {
 
         categoryMapper.batchDeleteCategory(ids, uId);
         userCategoryMapper.batchDeleteUserCategory(delUserCategoryIds, uId);
+    }
+
+    @Override
+    public CategoryEntity findCategoryById (Long id) {
+        return categoryMapper.findCategoryById(id);
     }
 }

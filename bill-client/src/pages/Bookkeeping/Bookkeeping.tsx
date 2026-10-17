@@ -1,15 +1,17 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router';
-import { Segmented } from 'antd-mobile';
+import { Segmented, Toast } from 'antd-mobile';
 import useUserStore from '@/store/useUserStore'
-import useCategoryStore from '@/store/useCategoryStore'
+import useCategoryList from '@/hooks/useCategoryList';
 
-import {CategoryTypeEnum, type CategoryType} from '@/enums/categoryEnum'
-import type {CategoryVO} from '@/types/category'
+import { CategoryTypeEnum, type CategoryType } from '@/enums/categoryEnum'
+import type { CategoryVO } from '@/types/category'
 
 import NavBar from '@/components/NavBar/NavBar';
 import NoLogin from '@/components/NoLogin/NoLogin';
 import Calculator, { type CalculatorOnConfirmResult, type CalculatorRefProps } from '@/components/Calculator/Calculator';
+
+import { insertBill } from '@/api/bill'
 
 import './style.scss';
 
@@ -17,27 +19,32 @@ export default function Bookkeeping() {
   const navigate = useNavigate();
   // const location = useLocation();
   const userInfo = useUserStore(state => state.userInfo);
-  const incomeCategorys = useCategoryStore(state => state.incomeList);
-  const expendCategorys = useCategoryStore(state => state.expendList);
-  const updateCategoryList = useCategoryStore(state => state.updateList);
+  const {
+    enableExpendCategorys,
+    // disableExpendCategorys,
+    enableIncomeCategorys,
+    // disableIncomeCategorys,
+    updateCategory
+  } = useCategoryList();
+  // const incomeCategorys = useCategoryStore(state => state.incomeList);
+  // const expendCategorys = useCategoryStore(state => state.expendList);
+  // const updateCategoryList = useCategoryStore(state => state.updateList);
 
-  const [currentIcon, setCurrentIcon] = useState<CategoryVO | null>(null);
+  const [category, setCategory] = useState<CategoryVO | null>(null);
   const [type, setType] = useState<CategoryType>(CategoryTypeEnum.EXPEND);
   const calculatorInstance = useRef<CalculatorRefProps>(null);
   // const [category, setCategory] = useState<CategoryItem | undefined>(undefined);
 
   const currentIcons = useMemo(
-    () => (type === CategoryTypeEnum.INCOME ? incomeCategorys : expendCategorys),
-    [type, incomeCategorys, expendCategorys]
+    () => (type === CategoryTypeEnum.INCOME ? enableIncomeCategorys : enableExpendCategorys),
+    [type, enableIncomeCategorys, enableExpendCategorys]
   );
 
   useEffect(() => {
-    if (!incomeCategorys.length || !expendCategorys.length) {
-      updateCategoryList().then(() => {
-        console.log(incomeCategorys, expendCategorys)
-      });
+    if (!enableIncomeCategorys.length || !enableExpendCategorys.length) {
+      updateCategory();
     }
-  }, [updateCategoryList, incomeCategorys, expendCategorys]);
+  }, [enableIncomeCategorys, enableExpendCategorys, updateCategory]);
 
   // useEffect(() => {
   //   const editData = location.state as BillItem | null;
@@ -52,8 +59,29 @@ export default function Bookkeeping() {
   //   }
   // }, [currentIcons, category]);
 
-  function handlerConfirm(calculatorResult: CalculatorOnConfirmResult) {
-    console.log(calculatorResult)
+  const handlerConfirm = useCallback(async (calculatorResult: CalculatorOnConfirmResult) => {
+
+    if (!category) {
+      return Toast.show({
+        content: "请选择分类",
+        icon: 'fail'
+      })
+    }
+    const param = {
+      type,
+      categoryId: category.id,
+      ...calculatorResult
+    }
+    console.log(param);
+
+    const res = await insertBill(param);
+
+    if (res) {
+      Toast.show({
+        icon: 'success',
+        content: '保存成功'
+      })
+    }
     // const { price, date, remark } = calculatorResult;
     // const billDetail = {
     //   categoryType: tabEnum[tab],
@@ -67,7 +95,7 @@ export default function Bookkeeping() {
     // } else {
     //   _insertBill(billDetail);
     // }
-  }
+  }, [category, type])
 
   // async function _insertBill(insertBillData: InsertBillProps) {
   //   try {
@@ -133,13 +161,13 @@ export default function Bookkeeping() {
             />
           </div>
 
-          <div className="icon-box" style={{paddingBottom: currentIcon ? '390px' : ''}}>
+          <div className="icon-box" style={{ paddingBottom: category ? '390px' : '' }}>
             <ul className="icon-list">
               {currentIcons.map((i) => (
                 <li
-                  className={`icon-item ${currentIcon?.title === i.title ? 'active' : ''}`}
+                  className={`icon-item ${category?.title === i.title ? 'active' : ''}`}
                   key={i.title}
-                  onClick={() => setCurrentIcon(i)}
+                  onClick={() => setCategory(i)}
                 >
                   <div className="icon-container">
                     <span className={`icon iconfont icon-${i.icon}`} />
@@ -159,11 +187,11 @@ export default function Bookkeeping() {
             </ul>
           </div>
 
-          {currentIcon && (
+          {category && (
             <Calculator
               ref={calculatorInstance}
-              onConfirm={handlerConfirm}
               style={{ position: 'fixed', bottom: 0, zIndex: 1 }}
+              onConfirm={handlerConfirm}
             />
           )}
         </div>

@@ -5,12 +5,11 @@ import { Segmented, Toast, Button, Dialog } from 'antd-mobile';
 import { DragDropProvider, type DragEndEvent } from '@dnd-kit/react';
 import { isSortable } from '@dnd-kit/react/sortable';
 
-import useCategoryStore from '@/store/useCategoryStore'
+import useCategoryList from '@/hooks/useCategoryList'
 
 import { CategoryTypeEnum, type CategoryType, CategoryEnableEnum, checkIsCategoryType } from '@/enums/categoryEnum'
 import type {
-  CategoryVO,
-  CategoryItem
+  CategoryVO
 } from '@/types/category';
 import { batchUpdateCategory, batchDeleteCategory } from '@/api/category'
 
@@ -36,41 +35,49 @@ export default function CategorySetting() {
 
     return type;
   });
-  const incomeCategorys = useCategoryStore(state => state.incomeList);
-  const expendCategorys = useCategoryStore(state => state.expendList);
-  const updateCategory = useCategoryStore((s) => s.updateList);
 
-  const { enableIncomeCategorys, disableIncomeCategorys, enableExpendCategorys, disableExpendCategorys } = useMemo(() => {
-    const enableIncomeCategorys: CategoryVO[] = [];
-    const disableIncomeCategorys: CategoryVO[] = [];
-    for (const item of incomeCategorys) {
-      if (item.enable === CategoryEnableEnum.ENABLE) {
-        enableIncomeCategorys.push(item);
-      } else {
-        disableIncomeCategorys.push(item);
-      }
-    }
-    enableIncomeCategorys.sort((a, b) => a.sort - b.sort);
-    const enableExpendCategorys: CategoryVO[] = [];
-    const disableExpendCategorys: CategoryVO[] = [];
+  const {
+    enableIncomeCategorys,
+    disableIncomeCategorys,
+    enableExpendCategorys,
+    disableExpendCategorys,
+    updateCategory
+  } = useCategoryList();
+  // const incomeCategorys = useCategoryStore(state => state.incomeList);
+  // const expendCategorys = useCategoryStore(state => state.expendList);
+  // const updateCategory = useCategoryStore((s) => s.updateList);
 
-    for (const item of expendCategorys) {
-      if (item.enable) {
-        enableExpendCategorys.push(item);
-      } else {
-        disableExpendCategorys.push(item);
-      }
-    }
+  // const { enableIncomeCategorys, disableIncomeCategorys, enableExpendCategorys, disableExpendCategorys } = useMemo(() => {
+  //   const enableIncomeCategorys: CategoryVO[] = [];
+  //   const disableIncomeCategorys: CategoryVO[] = [];
+  //   for (const item of incomeCategorys) {
+  //     if (item.enable === CategoryEnableEnum.ENABLE) {
+  //       enableIncomeCategorys.push(item);
+  //     } else {
+  //       disableIncomeCategorys.push(item);
+  //     }
+  //   }
+  //   enableIncomeCategorys.sort((a, b) => a.sort - b.sort);
+  //   const enableExpendCategorys: CategoryVO[] = [];
+  //   const disableExpendCategorys: CategoryVO[] = [];
 
-    enableExpendCategorys.sort((a, b) => a.sort - b.sort);
+  //   for (const item of expendCategorys) {
+  //     if (item.enable) {
+  //       enableExpendCategorys.push(item);
+  //     } else {
+  //       disableExpendCategorys.push(item);
+  //     }
+  //   }
 
-    return {
-      enableIncomeCategorys,
-      disableIncomeCategorys,
-      enableExpendCategorys,
-      disableExpendCategorys
-    }
-  }, [incomeCategorys, expendCategorys]);
+  //   enableExpendCategorys.sort((a, b) => a.sort - b.sort);
+
+  //   return {
+  //     enableIncomeCategorys,
+  //     disableIncomeCategorys,
+  //     enableExpendCategorys,
+  //     disableExpendCategorys
+  //   }
+  // }, [incomeCategorys, expendCategorys]);
 
   const test = useCallback(() => {
     console.log('enableIncomeCategorys', enableIncomeCategorys);

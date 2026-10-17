@@ -1,6 +1,6 @@
 import type { BaseResult } from './base';
 import type { CategoryItem } from './category';
-
+import type {CategoryType} from '@/enums/categoryEnum'
 export interface BillItem {
   readonly id: number;
   readonly uid: number;
@@ -20,10 +20,10 @@ export type GetBillListByDateResponse = BaseResult<{
 }>;
 
 export interface InsertBillProps {
-  categoryType: number;
+  type: CategoryType;
   categoryId: number;
   price: string;
-  billTime: string;
+  date: string;
   remark?: string;
 }
 

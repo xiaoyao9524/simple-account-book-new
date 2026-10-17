@@ -7,13 +7,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.method.ParameterValidationResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.exc.InvalidFormatException;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -58,11 +62,31 @@ public class GlobalExceptionHandler {
                 .body(BaseResponse.fail(message));
     }
 
-    /** 请求体无法解析（JSON 格式错误 / 缺少 body） */
+    /**
+     * 请求体无法解析（JSON 格式错误 / 缺少 body）
+     */
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<BaseResponse<Void>> handleNotReadable(HttpMessageNotReadableException e) {
+    public ResponseEntity handleNotReadable(HttpMessageNotReadableException e) {
+        Throwable cause = e.getCause();
         // 打印实际异常，方便定位
-        System.out.println("========== HttpMessageNotReadableException: " + e.getMessage());
+
+        if (cause instanceof InvalidFormatException invalidFormat) {
+            String field = invalidFormat.getPath().stream()
+                    .map(JacksonException.Reference::getPropertyName)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.joining("."));
+
+            // 针对 LocalDate 给更友好的提示
+            if (invalidFormat.getTargetType() == LocalDate.class
+                    || invalidFormat.getTargetType() == LocalDateTime.class) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(BaseResponse.fail("字段「" + field + "」日期格式错误，应为 yyyy-MM-dd"));
+            }
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(BaseResponse.fail("字段「" + field + "」格式错误"));
+        }
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(BaseResponse.fail("请求体格式不正确或为空"));
     }

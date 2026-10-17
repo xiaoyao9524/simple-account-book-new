@@ -6,6 +6,7 @@ import com.xy.simple_accountbook.bill.entity.vo.BaseResponse;
 import com.xy.simple_accountbook.bill.entity.vo.CategoryVO;
 import com.xy.simple_accountbook.bill.service.impl.CategoryServiceImpl;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,10 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 public class CategoryController {
-
-    @Autowired
-    CategoryServiceImpl categoryService;
+    private final CategoryServiceImpl categoryService;
 
     @GetMapping("/category/queryUserCategory")
     public BaseResponse<List<CategoryVO>> queryUserCategory() {

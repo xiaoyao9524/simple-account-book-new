@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xy.simple_accountbook.bill.mapper.BillUserMapper">
+    <resultMap id="categoryResultMap" type="com.xy.simple_accountbook.bill.entity.BillUser">
+        <id column="id" property="id"/>
+        <result column="bill_id" property="billId"/>
+        <result column="u_id" property="uId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="deleted_at" property="deletedAt" />
+    </resultMap>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="billUser.id">
+        INSERT INTO bill_user (bill_id, u_id)
+        VALUES (#{billUser.billId}, #{billUser.uId})
+    </insert>
+</mapper>
