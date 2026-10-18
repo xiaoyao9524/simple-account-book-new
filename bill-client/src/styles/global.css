@@ -143,3 +143,59 @@ p {
 .adm-button.adm-button-warning:not(.adm-button-disabled):not(.adm-button-fill-outline) {
   background: linear-gradient(135deg, #f97316 0%, #ef4444 100%);
 }
+
+/* ===== Dialog 弹窗按钮样式优化 ===== */
+body .adm-dialog .adm-center-popup-body {
+  border-radius: var(--radius-lg) !important;
+  overflow: hidden;
+}
+
+body .adm-dialog-footer .adm-dialog-action-row {
+  border-top: none !important;
+  padding: 4px 16px 16px !important;
+  gap: 12px !important;
+}
+
+body .adm-dialog-footer .adm-dialog-action-row > .adm-dialog-button {
+  border: none !important;
+  border-radius: var(--radius-md) !important;
+  padding: 10px 16px !important;
+  font-size: var(--adm-font-size-9) !important;
+  line-height: 1.5 !important;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), opacity var(--transition-fast) !important;
+}
+
+body .adm-dialog-footer .adm-dialog-action-row > .adm-dialog-button:active {
+  transform: scale(0.97) !important;
+  opacity: 0.9 !important;
+}
+
+/* 取消按钮：第一个 */
+body .adm-dialog-footer .adm-dialog-action-row > .adm-dialog-button:first-child {
+  background: #fff !important;
+  background-color: #fff !important;
+  color: #dc2626 !important;
+  border: 1.5px solid #fca5a5 !important;
+  font-weight: 700 !important;
+  --background-color: #fff !important;
+  --text-color: #dc2626 !important;
+  --border-color: #fca5a5 !important;
+}
+
+/* 确认按钮：最后一个（带 bold 标记） */
+body .adm-dialog-footer .adm-dialog-action-row > .adm-dialog-button.adm-dialog-button-bold,
+body .adm-dialog-footer .adm-dialog-action-row > .adm-dialog-button:last-child {
+  background: linear-gradient(135deg, #334155 0%, #1e293b 100%) !important;
+  background-color: #1e293b !important;
+  color: #fff !important;
+  --background-color: transparent !important;
+  --text-color: #fff !important;
+  font-weight: 600 !important;
+  box-shadow: 0 4px 14px rgba(30, 41, 59, 0.25) !important;
+}
+
+/* 危险操作确认按钮（danger） */
+body .adm-dialog-footer .adm-dialog-action-row > .adm-dialog-button.adm-button-danger:last-child {
+  background: linear-gradient(135deg, #f97316 0%, #ef4444 100%) !important;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.25) !important;
+}

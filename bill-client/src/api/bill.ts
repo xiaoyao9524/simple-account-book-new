@@ -1,12 +1,12 @@
 import request from './request';
 import type {
   GetBillListByDateRequestProps,
-  GetBillListByDateResponse,
   InsertBillProps,
   DeleteBillProps,
   DeleteBillResponse,
   UpdateBillProps,
   UpdateBillResponse,
+  BillItem
 } from '@/types/bill';
 
 export const insertBill = (data: InsertBillProps) =>
@@ -18,11 +18,11 @@ export const insertBill = (data: InsertBillProps) =>
 
 /**old */
 
-export const getBillListByDate = (data: GetBillListByDateRequestProps) =>
-  request<GetBillListByDateResponse>({
-    method: 'post',
-    url: '/bill/getBillListByDate',
-    data,
+export const getBillListByDate = (params: GetBillListByDateRequestProps) =>
+  request<BillItem[]>({
+    method: 'get',
+    url: '/bill/list',
+    params
   });
 
 

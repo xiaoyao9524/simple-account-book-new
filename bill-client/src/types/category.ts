@@ -4,7 +4,7 @@ import type { CategoryType, CategoryEnable } from '@/enums/categoryEnum'
 
 export interface CategoryItem {
   readonly id: number;
-  readonly uId: number | null;
+  // readonly uId?: number | null;
   type: CategoryType;
   title: string;
   icon: string;

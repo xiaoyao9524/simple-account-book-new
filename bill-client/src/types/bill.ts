@@ -3,11 +3,11 @@ import type { CategoryItem } from './category';
 import type {CategoryType} from '@/enums/categoryEnum'
 export interface BillItem {
   readonly id: number;
-  readonly uid: number;
+  // readonly uid: number;
   category: CategoryItem;
-  categoryType: number;
+  type: number;
   price: number;
-  billTime: string;
+  date: string;
   remark?: string;
 }
 

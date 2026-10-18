@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router';
-import dayjs, { type Dayjs } from 'dayjs';
+import dayjs, {type Dayjs} from 'dayjs';
 import { Toast, DatePicker, Dialog, SwipeAction, List, NoticeBar } from 'antd-mobile';
 import { useStore } from '@/store/useStore';
 import useSystemStore from '@/store/useSystemStore';
@@ -13,7 +13,7 @@ import './style.scss';
 
 interface BillListItem {
   date: string;
-  totalPrice: string;
+  totalPrice: number;
   list: BillItem[];
 }
 
@@ -50,13 +50,79 @@ export default function Home() {
   const [datePickerVisible, setDatePickerVisible] = useState(false);
   // const [incomePrice, setIncomePrice] = useState(0);
   // const [expenditurePrice, setExpenditurePrice] = useState(0);
-  const [list, setList] = useState<BillListItem[]>([]);
-  const [year, month] = date.format('YYYY-MM').split('-');
+  const [list, setList] = useState<BillItem[]>([]);
+  // const [year, month] = date.format('YYYY-MM').split('-');
+  const [year, month] = useMemo(() => {
+    return date.format('YYYY-MM').split('-');
+  }, [date])
+
+  const renderList = useMemo<BillListItem[]>(() => {
+    
+    /**
+     * {
+     *  date: '2026-10-18',
+     *  totalPrice: 666.66,
+     *  list: []
+     * }
+     */
+
+    const map: Record<string, BillListItem> = {};
+
+    for (const item of list) {
+      const {date} = item;
+
+      const parent = map[date];
+
+      if (parent) {
+        parent.totalPrice += Number(item.price);
+        map[date].list.push(item);
+      } else {
+        const newParent:BillListItem = {
+          date,
+          totalPrice: Number(item.price),
+          list: [item]
+        }
+
+        map[date] = newParent;
+      }
+    }
+
+    return Object.values(map);
+  }, [list])
 
 
+
+  const getBillList = useCallback(async () => {
+    try {
+      const res = await getBillListByDate({ date: `${year}-${month}` });
+
+      if (res) {
+        setList(res.data);
+      }
+      // if (res.status === 200) {
+      //   let income = 0;
+      //   let expenditure = 0;
+      //   for (const item of res.data.list) {
+      //     if (item.categoryType === 0) {
+      //       income += item.price;
+      //     } else {
+      //       expenditure += item.price;
+      //     }
+      //   }
+      //   setIncomePrice(income);
+      //   setExpenditurePrice(expenditure);
+      //   setList(handlerList(res.data.list));
+      // } else {
+      //   Toast.show({ content: res.message, icon: 'fail' });
+      // }
+    } catch (err) {
+      Toast.show({ content: (err as Error).message, icon: 'fail' });
+    }
+  }, [month, year])
 
   useEffect(() => {
-    // getBillList();
+    getBillList();
+    /*
     setList([
       {
         date: '2026-09-24',
@@ -239,58 +305,36 @@ export default function Home() {
         ]
       }
     ])
-  }, [year, month]);
-
-  async function getBillList() {
-    try {
-      const res = await getBillListByDate({ date: `${year}-${month}` });
-      if (res.status === 200) {
-        let income = 0;
-        let expenditure = 0;
-        for (const item of res.data.list) {
-          if (item.categoryType === 0) {
-            income += item.price;
-          } else {
-            expenditure += item.price;
-          }
-        }
-        setIncomePrice(income);
-        setExpenditurePrice(expenditure);
-        setList(handlerList(res.data.list));
-      } else {
-        Toast.show({ content: res.message, icon: 'fail' });
-      }
-    } catch (err) {
-      Toast.show({ content: (err as Error).message, icon: 'fail' });
-    }
-  }
+      */
+  }, [getBillList]);
 
   function handlerEdit(item: BillItem) {
     navigate('/bookkeeping', { state: item });
   }
 
   async function handlerDelete(item: BillItem) {
-    try {
-      const res = await deleteBill({ id: item.id });
-      if (res.status === 200) {
-        Toast.show({ content: '删除成功', icon: 'success' });
-        getBillList();
-      } else {
-        Toast.show({ content: res.message, icon: 'fail' });
-      }
-    } catch (err) {
-      Toast.show({ content: (err as Error).message, icon: 'fail' });
-    }
+    // try {
+    //   const res = await deleteBill({ id: item.id });
+    //   if (res.status === 200) {
+    //     Toast.show({ content: '删除成功', icon: 'success' });
+    //     getBillList();
+    //   } else {
+    //     Toast.show({ content: res.message, icon: 'fail' });
+    //   }
+    // } catch (err) {
+    //   Toast.show({ content: (err as Error).message, icon: 'fail' });
+    // }
   }
 
   async function confirmDelete(item: BillItem) {
-    const confirmed = await Dialog.confirm({
-      title: '删除',
-      content: '你确定要删除该项吗？',
-    });
-    if (confirmed) {
-      handlerDelete(item);
-    }
+    // const confirmed = await Dialog.confirm({
+    //   title: '删除',
+    //   content: '你确定要删除该项吗？',
+
+    // });
+    // if (confirmed) {
+    //   handlerDelete(item);
+    // }
   }
 
   return (
@@ -309,9 +353,9 @@ export default function Home() {
                   className="header-item date-item"
                   onClick={() => setDatePickerVisible(true)}
                 >
-                  <p className="title">2026年</p>
+                  <p className="title">{year}年</p>
                   <p className="value">
-                    9月
+                    {month}月
                     <span className="icon iconfont-base icon-down" />
                   </p>
                 </li>
@@ -327,7 +371,7 @@ export default function Home() {
             </header>
 
             <div className="book-list-wrapper">
-              {list.map((billItem) => (
+              {renderList.map((billItem) => (
                 <List key={billItem.date} header={
                   <div className="bill-item-header">
                     <p className="date">{billItem.date}</p>
@@ -349,7 +393,7 @@ export default function Home() {
                       }}
                     >
                       <List.Item
-                        extra={`${item.categoryType === 1 ? '-' : ''}${item.price}`}
+                        extra={`${item.price}`}
                       >
                         {item.remark || item.category.title}
                       </List.Item>

@@ -2,20 +2,64 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xy.simple_accountbook.bill.mapper.BillMapper">
-    <resultMap id="categoryResultMap" type="com.xy.simple_accountbook.bill.entity.BillEntity">
+    <resultMap id="billResultMap" type="com.xy.simple_accountbook.bill.entity.BillEntity">
         <id column="id" property="id"/>
-        <result column="category_id" property="categoryId"/>
         <result column="type" property="type"
                 typeHandler="com.xy.simple_accountbook.bill.handler.CategoryTypeHandler"/>
+        <result column="date" property="date"/>
+        <result column="category_id" property="categoryId"/>
         <result column="price" property="price"/>
         <result column="remark" property="remark"/>
         <result column="create_time" property="createTime"/>
         <result column="update_time" property="updateTime"/>
-        <result column="deleted_at" property="deletedAt" />
+        <result column="deleted_at" property="deletedAt"/>
+        <!--        <association property="category" javaType="com.xy.simple_accountbook.bill.entity.vo.CategoryVO">-->
+        <!--            <id column="category_id" property="id" />-->
+        <!--            <result column="category_type" property="type" typeHandler="com.xy.simple_accountbook.bill.handler.CategoryTypeHandler" />-->
+        <!--            <result column="category_title" property="title" />-->
+        <!--            <result column="category_icon" property="icon" />-->
+        <!--        </association>-->
     </resultMap>
+
+    <resultMap id="billQueryResultMap" type="com.xy.simple_accountbook.bill.mapper.result.BillQueryResult">
+        <id column="id" property="id"/>
+        <result column="type" property="type"
+                typeHandler="com.xy.simple_accountbook.bill.handler.CategoryTypeHandler"/>
+        <result column="date" property="date"/>
+        <result column="price" property="price"/>
+        <result column="remark" property="remark"/>
+        <association property="category" javaType="com.xy.simple_accountbook.bill.entity.vo.CategoryVO">
+            <id column="category_id" property="id"/>
+            <result column="category_type" property="type"
+                    typeHandler="com.xy.simple_accountbook.bill.handler.CategoryTypeHandler"/>
+            <result column="category_title" property="title"/>
+            <result column="category_icon" property="icon"/>
+        </association>
+    </resultMap>
+
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="bill.id">
         INSERT INTO bill (type, category_id, price, remark, date)
         VALUES (#{bill.type}, #{bill.categoryId}, #{bill.price}, #{bill.remark}, #{bill.date})
     </insert>
+
+    <select id="queryByDateAndUid" resultMap="billQueryResultMap">
+        SELECT b.id,
+               b.type,
+               b.price,
+               b.remark,
+               b.date,
+               c.id    AS category_id,
+               c.type  AS category_type,
+               c.title AS category_title,
+               c.icon  AS category_icon
+        FROM bill b
+                 INNER JOIN bill_user bu ON b.id = bu.bill_id AND bu.deleted_at IS NULL
+                 LEFT JOIN category c ON b.category_id = c.id AND c.deleted_at IS NULL
+        WHERE bu.u_id = #{uId}
+          AND b.date >= #{start}
+          AND b.date &lt; #{end}
+          AND b.deleted_at IS NULL
+        ORDER BY b.date DESC
+    </select>
 </mapper>

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xy.simple_accountbook.bill.mapper.BillUserMapper">
-    <resultMap id="categoryResultMap" type="com.xy.simple_accountbook.bill.entity.BillUser">
+    <resultMap id="billUserResultMap" type="com.xy.simple_accountbook.bill.entity.BillUserEntity">
         <id column="id" property="id"/>
         <result column="bill_id" property="billId"/>
         <result column="u_id" property="uId"/>
@@ -11,8 +11,15 @@
         <result column="deleted_at" property="deletedAt" />
     </resultMap>
 
-    <insert id="insert" useGeneratedKeys="true" keyProperty="billUser.id">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="billUserEntity.id">
         INSERT INTO bill_user (bill_id, u_id)
-        VALUES (#{billUser.billId}, #{billUser.uId})
+        VALUES (#{billUserEntity.billId}, #{billUserEntity.uId})
     </insert>
+
+    <select id="queryByUId" resultMap="billUserResultMap">
+        SELECT id, bill_id, u_id
+        FROM bill_user
+        WHERE u_id = #{uId}
+        AND deleted_at IS NULL
+    </select>
 </mapper>

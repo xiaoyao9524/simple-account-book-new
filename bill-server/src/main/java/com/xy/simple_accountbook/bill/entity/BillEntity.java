@@ -18,7 +18,7 @@ public class BillEntity extends BaseEntity {
 
     private BigDecimal price;
 
-    private String remark;
+    private String remark = "";
 
     private LocalDate date;
 }

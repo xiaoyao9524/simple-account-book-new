@@ -14,7 +14,7 @@
     "antd-mobile": "^5.38.1",
     "antd-mobile-icons": "^0.3.0",
     "axios": "^1.7.9",
-    "dayjs": "^1.11.13",
+    "dayjs": "^1.11.23",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-hook-form": "^7.54.2",
