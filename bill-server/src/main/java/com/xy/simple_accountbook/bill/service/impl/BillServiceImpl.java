@@ -14,6 +14,7 @@ import com.xy.simple_accountbook.bill.mapper.result.BillQueryResult;
 import com.xy.simple_accountbook.bill.service.BillService;
 import com.xy.simple_accountbook.bill.service.CategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,7 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +32,7 @@ public class BillServiceImpl implements BillService {
     private final BillUserMapper billUserMapper;
     private final CategoryService categoryService;
 
+    @Override
     public List<BillQueryResult> queryByDateAndUid (YearMonth yearMonth) {
         Long uId = UserContext.getUserId();
 //        YearMonth yearMonth = YearMonth.from(date);
@@ -40,6 +43,7 @@ public class BillServiceImpl implements BillService {
         return billMapper.queryByDateAndUid(start, end, uId);
     }
 
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void insert (InsertBillRequest bill) {
         Long uId = UserContext.getUserId();
@@ -75,5 +79,36 @@ public class BillServiceImpl implements BillService {
         if (billUserAffected == 0) {
             throw new BusinessException(ResponseCodeEnum.BUSINESS_ERROR, "插入失败");
         }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Integer batchDelete (List<Long> delBillIds) {
+        if (delBillIds == null || delBillIds.isEmpty()) {
+            return 0;
+        }
+        Long uId = UserContext.getUserId();
+        // 先查出BillUser
+        List<BillUserEntity> delBillUserEntitys = billUserMapper.queryByBillIdsAndUId(delBillIds, uId);
+
+        if (delBillUserEntitys.size() != delBillIds.size()) {
+            throw new BusinessException(ResponseCodeEnum.BUSINESS_ERROR, "该项记账不存在");
+        }
+
+        int affects = billMapper.batchDelete(delBillIds);
+
+        if (affects != delBillIds.size()) {
+            throw new BusinessException(ResponseCodeEnum.BUSINESS_ERROR, "删除失败");
+        }
+
+        List<Long> delBillUserIds = delBillUserEntitys.stream().map(BillUserEntity::getId).toList();
+
+        int affectsBillUser = billUserMapper.batchDeleteByIdsAndUId(delBillUserIds, uId);
+
+        if (affectsBillUser != delBillUserEntitys.size()) {
+            throw new BusinessException(ResponseCodeEnum.BUSINESS_ERROR, "删除失败");
+        }
+
+        return affectsBillUser;
     }
 }

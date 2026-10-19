@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router';
-import { useStore } from '@/store/useStore';
+import useSystemStore from '@/store/useSystemStore';
 import './style.scss';
 
 const tabBarList = [
@@ -9,10 +9,7 @@ const tabBarList = [
 ];
 
 export default function TabBar() {
-  const tabBarShow = useStore((s) => s.system.tabBarShow);
-  const isIOS = useStore((s) => s.system.isIOS);
-
-  if (!tabBarShow) return null;
+  const isIOS = useSystemStore((s) => s.isIOS);
 
   return (
     <ul className={`tab-bar ${isIOS ? 'is-ios' : ''}`}>

@@ -2,8 +2,6 @@ import request from './request';
 import type {
   GetBillListByDateRequestProps,
   InsertBillProps,
-  DeleteBillProps,
-  DeleteBillResponse,
   UpdateBillProps,
   UpdateBillResponse,
   BillItem
@@ -16,22 +14,20 @@ export const insertBill = (data: InsertBillProps) =>
     data,
   });
 
-/**old */
+  export const batchDeleteBill = (ids: number[]) =>
+  request<number>({
+    method: 'post',
+    url: '/bill/batchDelete',
+    data: {
+      ids
+    },
+  });
 
 export const getBillListByDate = (params: GetBillListByDateRequestProps) =>
   request<BillItem[]>({
     method: 'get',
     url: '/bill/list',
     params
-  });
-
-
-
-export const deleteBill = (data: DeleteBillProps) =>
-  request<DeleteBillResponse>({
-    method: 'delete',
-    url: '/bill/deleteBill',
-    data,
   });
 
 export const updateBill = (data: UpdateBillProps) =>

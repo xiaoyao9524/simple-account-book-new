@@ -22,4 +22,26 @@
         WHERE u_id = #{uId}
         AND deleted_at IS NULL
     </select>
+
+    <select id="queryByBillIdsAndUId" resultMap="billUserResultMap">
+        SELECT id, bill_id, u_id, create_time, update_time
+        FROM bill_user
+        WHERE bill_id IN
+        <foreach collection="billIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        AND deleted_at IS NULL
+        AND u_id = #{uId}
+    </select>
+
+    <update id="batchDeleteByIdsAndUId">
+        UPDATE bill_user
+        SET deleted_at = NOW()
+        WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        AND u_id = #{uId}
+        AND deleted_at IS NULL
+    </update>
 </mapper>

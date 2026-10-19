@@ -1,15 +1,15 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router';
-import dayjs, {type Dayjs} from 'dayjs';
+import dayjs, { type Dayjs } from 'dayjs';
 import { Toast, DatePicker, Dialog, SwipeAction, List, NoticeBar } from 'antd-mobile';
-import { useStore } from '@/store/useStore';
 import useSystemStore from '@/store/useSystemStore';
 import useUserStore from '@/store/useUserStore';
-import { getBillListByDate, deleteBill } from '@/api/bill';
+import { getBillListByDate, batchDeleteBill } from '@/api/bill';
 import type { BillItem } from '@/types/bill';
 import TabBar from '@/components/TabBar/TabBar';
 import NoLogin from '@/components/NoLogin/NoLogin';
 import './style.scss';
+import { CategoryTypeEnum } from '@/enums/categoryEnum';
 
 interface BillListItem {
   date: string;
@@ -17,67 +17,35 @@ interface BillListItem {
   list: BillItem[];
 }
 
-function handlerList(list: BillItem[]): BillListItem[] {
-  const obj: Record<string, BillItem[]> = {};
-  for (const item of list) {
-    if (obj[item.billTime]) {
-      obj[item.billTime].push(item);
-    } else {
-      obj[item.billTime] = [item];
-    }
-  }
-  return Object.keys(obj)
-    .map((key) => ({
-      date: key,
-      totalPrice: obj[key]
-        .map((i) => (i.categoryType === 0 ? i.price : -i.price))
-        .reduce((total, num) => total + num)
-        .toFixed(2),
-      list: obj[key],
-    }))
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-}
-
 export default function Home() {
   const navigate = useNavigate();
   const isMobile = useSystemStore(s => s.isMobile);
-  // const userInfo = useStore((s) => s.userInfo);
   const userInfo = useUserStore(state => state.userInfo);
-
-  console.log('userInfo: ', userInfo)
 
   const [date, setDate] = useState<Dayjs>(dayjs());
   const [datePickerVisible, setDatePickerVisible] = useState(false);
-  // const [incomePrice, setIncomePrice] = useState(0);
-  // const [expenditurePrice, setExpenditurePrice] = useState(0);
   const [list, setList] = useState<BillItem[]>([]);
-  // const [year, month] = date.format('YYYY-MM').split('-');
   const [year, month] = useMemo(() => {
     return date.format('YYYY-MM').split('-');
   }, [date])
 
   const renderList = useMemo<BillListItem[]>(() => {
-    
-    /**
-     * {
-     *  date: '2026-10-18',
-     *  totalPrice: 666.66,
-     *  list: []
-     * }
-     */
-
     const map: Record<string, BillListItem> = {};
 
     for (const item of list) {
-      const {date} = item;
+      const { date } = item;
 
       const parent = map[date];
 
       if (parent) {
-        parent.totalPrice += Number(item.price);
+        if (item.category.type === CategoryTypeEnum.INCOME) {
+          parent.totalPrice += Number(item.price);
+        } else {
+          parent.totalPrice -= Number(item.price);
+        }
         map[date].list.push(item);
       } else {
-        const newParent:BillListItem = {
+        const newParent: BillListItem = {
           date,
           totalPrice: Number(item.price),
           list: [item]
@@ -90,6 +58,23 @@ export default function Home() {
     return Object.values(map);
   }, [list])
 
+  const { totalIncome, totalExpand } = useMemo(() => {
+    let totalIncome = 0;
+    let totalExpand = 0;
+
+    for (const item of list) {
+      if (item.category.type === CategoryTypeEnum.INCOME) {
+        totalIncome += item.price;
+      } else {
+        totalExpand += item.price;
+      }
+    }
+
+    return {
+      totalIncome: (totalIncome + '').includes('.') ? totalIncome.toFixed(2) : totalIncome + '',
+      totalExpand: (totalExpand + '').includes('.') ? totalExpand.toFixed(2) : totalExpand + ''
+    }
+  }, [list])
 
 
   const getBillList = useCallback(async () => {
@@ -99,243 +84,40 @@ export default function Home() {
       if (res) {
         setList(res.data);
       }
-      // if (res.status === 200) {
-      //   let income = 0;
-      //   let expenditure = 0;
-      //   for (const item of res.data.list) {
-      //     if (item.categoryType === 0) {
-      //       income += item.price;
-      //     } else {
-      //       expenditure += item.price;
-      //     }
-      //   }
-      //   setIncomePrice(income);
-      //   setExpenditurePrice(expenditure);
-      //   setList(handlerList(res.data.list));
-      // } else {
-      //   Toast.show({ content: res.message, icon: 'fail' });
-      // }
     } catch (err) {
       Toast.show({ content: (err as Error).message, icon: 'fail' });
     }
   }, [month, year])
 
   useEffect(() => {
-    getBillList();
-    /*
-    setList([
-      {
-        date: '2026-09-24',
-        totalPrice: '666.66',
-        list: [
-          {
-            id: 1,
-            uid: 1,
-            billTime: '2026-09-24',
-            categoryType: 1,
-            price: 66,
-            remark: '备注',
-            category: {
-              id: 1,
-              categoryType: 1,
-              isDefault: 0,
-              title: '游戏',
-              icon: 'icon-shumashouji'
-            }
-          },
-          {
-            id: 2,
-            uid: 1,
-            billTime: '2026-09-24',
-            categoryType: 1,
-            price: 99,
-            remark: '备注2',
-            category: {
-              id: 2,
-              categoryType: 1,
-              isDefault: 0,
-              title: '买菜',
-              icon: 'icon-shumashouji'
-            }
-          }
-        ]
-      },
-      {
-        date: '2026-09-25',
-        totalPrice: '666.66',
-        list: [
-          {
-            id: 1,
-            uid: 1,
-            billTime: '2026-09-24',
-            categoryType: 1,
-            price: 66,
-            remark: '备注',
-            category: {
-              id: 1,
-              categoryType: 1,
-              isDefault: 0,
-              title: '游戏',
-              icon: 'icon-shumashouji'
-            }
-          },
-          {
-            id: 2,
-            uid: 1,
-            billTime: '2026-09-24',
-            categoryType: 1,
-            price: 99,
-            remark: '备注2',
-            category: {
-              id: 2,
-              categoryType: 1,
-              isDefault: 0,
-              title: '买菜',
-              icon: 'icon-shumashouji'
-            }
-          }
-        ]
-      },
-      {
-        date: '2026-09-26',
-        totalPrice: '666.66',
-        list: [
-          {
-            id: 1,
-            uid: 1,
-            billTime: '2026-09-24',
-            categoryType: 1,
-            price: 66,
-            remark: '备注',
-            category: {
-              id: 1,
-              categoryType: 1,
-              isDefault: 0,
-              title: '游戏',
-              icon: 'icon-shumashouji'
-            }
-          },
-          {
-            id: 2,
-            uid: 1,
-            billTime: '2026-09-24',
-            categoryType: 1,
-            price: 99,
-            remark: '备注2',
-            category: {
-              id: 2,
-              categoryType: 1,
-              isDefault: 0,
-              title: '买菜',
-              icon: 'icon-shumashouji'
-            }
-          }
-        ]
-      },
-      {
-        date: '2026-09-27',
-        totalPrice: '666.66',
-        list: [
-          {
-            id: 1,
-            uid: 1,
-            billTime: '2026-09-24',
-            categoryType: 1,
-            price: 66,
-            remark: '备注',
-            category: {
-              id: 1,
-              categoryType: 1,
-              isDefault: 0,
-              title: '游戏',
-              icon: 'icon-shumashouji'
-            }
-          },
-          {
-            id: 2,
-            uid: 1,
-            billTime: '2026-09-24',
-            categoryType: 1,
-            price: 99,
-            remark: '备注2',
-            category: {
-              id: 2,
-              categoryType: 1,
-              isDefault: 0,
-              title: '买菜',
-              icon: 'icon-shumashouji'
-            }
-          }
-        ]
-      },
-      {
-        date: '2026-09-28',
-        totalPrice: '666.66',
-        list: [
-          {
-            id: 1,
-            uid: 1,
-            billTime: '2026-09-24',
-            categoryType: 1,
-            price: 66,
-            remark: '备注',
-            category: {
-              id: 1,
-              categoryType: 1,
-              isDefault: 0,
-              title: '游戏',
-              icon: 'icon-shumashouji'
-            }
-          },
-          {
-            id: 2,
-            uid: 1,
-            billTime: '2026-09-24',
-            categoryType: 1,
-            price: 99,
-            remark: '备注2',
-            category: {
-              id: 2,
-              categoryType: 1,
-              isDefault: 0,
-              title: '买菜',
-              icon: 'icon-shumashouji'
-            }
-          }
-        ]
-      }
-    ])
-      */
+    void Promise.resolve().then(getBillList);
   }, [getBillList]);
 
   function handlerEdit(item: BillItem) {
     navigate('/bookkeeping', { state: item });
   }
 
-  async function handlerDelete(item: BillItem) {
-    // try {
-    //   const res = await deleteBill({ id: item.id });
-    //   if (res.status === 200) {
-    //     Toast.show({ content: '删除成功', icon: 'success' });
-    //     getBillList();
-    //   } else {
-    //     Toast.show({ content: res.message, icon: 'fail' });
-    //   }
-    // } catch (err) {
-    //   Toast.show({ content: (err as Error).message, icon: 'fail' });
-    // }
-  }
+  const handlerDelete = useCallback(async (item: BillItem) => {
+    const res = await batchDeleteBill([item.id]);
 
-  async function confirmDelete(item: BillItem) {
-    // const confirmed = await Dialog.confirm({
-    //   title: '删除',
-    //   content: '你确定要删除该项吗？',
+    if (res) {
+      Toast.show({ content: res.message, icon: 'success' });
+      getBillList();
+    }
 
-    // });
-    // if (confirmed) {
-    //   handlerDelete(item);
-    // }
-  }
+  }, [getBillList])
+
+  const confirmDelete = useCallback(async (item: BillItem) => {
+    console.log('del: ', item);
+    const confirmed = await Dialog.confirm({
+      title: '删除',
+      content: '你确定要删除该项吗？',
+
+    });
+    if (confirmed) {
+      handlerDelete(item);
+    }
+  }, [handlerDelete])
 
   return (
     <div className="home">
@@ -361,11 +143,11 @@ export default function Home() {
                 </li>
                 <li className="header-item">
                   <p className="title">收入</p>
-                  <p className="value">9999999.99</p>
+                  <p className="value">{totalIncome}</p>
                 </li>
                 <li className="header-item">
                   <p className="title">支出</p>
-                  <p className="value">66666666.66</p>
+                  <p className="value">{totalExpand}</p>
                 </li>
               </ul>
             </header>
@@ -393,9 +175,11 @@ export default function Home() {
                       }}
                     >
                       <List.Item
-                        extra={`${item.price}`}
+                        className={'bill-item'}
+                        extra={<span className={`extra ${item.type === CategoryTypeEnum.INCOME ? '' : 'minus'}`}>{`${item.category.type === CategoryTypeEnum.EXPEND ? '-' : ''}${item.price}`}</span>}
                       >
-                        {item.remark || item.category.title}
+                        <span className={`icon iconfont icon-${item.category.icon}`} />
+                        <span className={'title'}>{item.remark || item.category.title}</span>
                       </List.Item>
                     </SwipeAction>
                   ))}

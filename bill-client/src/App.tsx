@@ -1,6 +1,5 @@
 import { useEffect, useCallback } from 'react';
 import { Routes, Route } from 'react-router';
-// import { useStore } from '@/store/useStore';
 import useSystemStore from './store/useSystemStore';
 import useTokenStore from './store/useTokenStore';
 import useUserStore, { getInitialUserInfo } from './store/useUserStore';
@@ -25,7 +24,6 @@ export default function App() {
   const updateCategoryList = useCategoryStore(store => store.updateList);
   const initialSystemInfo = useCallback(() => {
     const systemInfo = checkSystemInfo();
-
     setSystemInfo(systemInfo);
   }, [setSystemInfo])
 
@@ -49,10 +47,10 @@ export default function App() {
       } else {
         setUserInfo(getInitialUserInfo());
       }
-    } catch (err) {
+    } catch {
       setUserInfo(getInitialUserInfo());
     }
-  }, [setToken, setUserInfo])
+  }, [setToken, setUserInfo, updateCategoryList])
 
   useEffect(() => {
     initialSystemInfo();

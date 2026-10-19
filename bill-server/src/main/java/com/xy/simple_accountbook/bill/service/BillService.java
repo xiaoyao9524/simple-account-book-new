@@ -10,4 +10,5 @@ import java.util.List;
 public interface BillService {
     void insert (InsertBillRequest bill);
     List<BillQueryResult> queryByDateAndUid(YearMonth date);
+    Integer batchDelete (List<Long> ids);
 }

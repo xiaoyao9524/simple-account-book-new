@@ -10,11 +10,24 @@ public class BaseResponse<T> {
     private T data;
 
     public static <T> BaseResponse<T> success (T data) {
+//        BaseResponse<T> baseResponse = new BaseResponse<T>();
+//
+//        baseResponse.setCode(ResponseCodeEnum.SUCCESS.getCode());
+//
+//        baseResponse.setMessage(ResponseCodeEnum.SUCCESS.getDesc());
+//
+//        baseResponse.setData(data);
+//
+//        return baseResponse;
+        return success(data, ResponseCodeEnum.SUCCESS.getDesc());
+    }
+
+    public static <T> BaseResponse<T> success (T data, String message) {
         BaseResponse<T> baseResponse = new BaseResponse<T>();
 
         baseResponse.setCode(ResponseCodeEnum.SUCCESS.getCode());
 
-        baseResponse.setMessage(ResponseCodeEnum.SUCCESS.getDesc());
+        baseResponse.setMessage(message);
 
         baseResponse.setData(data);
 

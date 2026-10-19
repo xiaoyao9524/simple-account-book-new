@@ -62,4 +62,12 @@
           AND b.deleted_at IS NULL
         ORDER BY b.date DESC
     </select>
+
+    <update id="batchDelete">
+        UPDATE bill
+        SET deleted_at = NOW()
+        WHERE id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">#{id}</foreach>
+        AND deleted_at IS NULL
+    </update>
 </mapper>
