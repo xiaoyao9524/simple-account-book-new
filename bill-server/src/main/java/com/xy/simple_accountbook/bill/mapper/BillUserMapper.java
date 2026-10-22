@@ -12,5 +12,6 @@ public interface BillUserMapper {
 
     List<BillUserEntity> queryByUId(@Param("uId") Long uId);
     List<BillUserEntity> queryByBillIdsAndUId(@Param("billIds") List<Long> billIds, @Param("uId") Long uId);
+    BillUserEntity findByBillIdAndUId(@Param("billId") Long billId, @Param("uId") Long uId);
     int batchDeleteByIdsAndUId(@Param("ids") List<Long> ids, @Param("uId")Long uId);
 }

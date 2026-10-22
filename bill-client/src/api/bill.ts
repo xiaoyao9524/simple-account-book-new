@@ -3,7 +3,6 @@ import type {
   GetBillListByDateRequestProps,
   InsertBillProps,
   UpdateBillProps,
-  UpdateBillResponse,
   BillItem
 } from '@/types/bill';
 
@@ -11,6 +10,13 @@ export const insertBill = (data: InsertBillProps) =>
   request({
     method: 'post',
     url: '/bill/insert',
+    data,
+  });
+
+  export const updateBill = (data: UpdateBillProps) =>
+  request({
+    method: 'post',
+    url: '/bill/update',
     data,
   });
 
@@ -30,9 +36,4 @@ export const getBillListByDate = (params: GetBillListByDateRequestProps) =>
     params
   });
 
-export const updateBill = (data: UpdateBillProps) =>
-  request<UpdateBillResponse>({
-    method: 'post',
-    url: '/bill/updateBill',
-    data,
-  });
+

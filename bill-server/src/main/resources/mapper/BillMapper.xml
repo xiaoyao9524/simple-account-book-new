@@ -63,6 +63,17 @@
         ORDER BY b.date DESC
     </select>
 
+    <update id="update">
+        UPDATE bill
+        SET type = #{bill.type},
+            category_id = #{bill.categoryId},
+            price = #{bill.price},
+            date = #{bill.date},
+            remark = #{bill.remark}
+        WHERE id = #{bill.id}
+        AND deleted_at IS NULL
+    </update>
+
     <update id="batchDelete">
         UPDATE bill
         SET deleted_at = NOW()

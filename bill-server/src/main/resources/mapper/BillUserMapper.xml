@@ -34,6 +34,14 @@
         AND u_id = #{uId}
     </select>
 
+    <select id="findByBillIdAndUId" resultMap="billUserResultMap">
+        SELECT id, bill_id, u_id, create_time, update_time
+        FROM bill_user
+        WHERE bill_id = #{billId}
+          AND deleted_at IS NULL
+          AND u_id = #{uId}
+    </select>
+
     <update id="batchDeleteByIdsAndUId">
         UPDATE bill_user
         SET deleted_at = NOW()

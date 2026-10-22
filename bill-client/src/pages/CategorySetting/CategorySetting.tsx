@@ -43,49 +43,6 @@ export default function CategorySetting() {
     disableExpendCategorys,
     updateCategory
   } = useCategoryList();
-  // const incomeCategorys = useCategoryStore(state => state.incomeList);
-  // const expendCategorys = useCategoryStore(state => state.expendList);
-  // const updateCategory = useCategoryStore((s) => s.updateList);
-
-  // const { enableIncomeCategorys, disableIncomeCategorys, enableExpendCategorys, disableExpendCategorys } = useMemo(() => {
-  //   const enableIncomeCategorys: CategoryVO[] = [];
-  //   const disableIncomeCategorys: CategoryVO[] = [];
-  //   for (const item of incomeCategorys) {
-  //     if (item.enable === CategoryEnableEnum.ENABLE) {
-  //       enableIncomeCategorys.push(item);
-  //     } else {
-  //       disableIncomeCategorys.push(item);
-  //     }
-  //   }
-  //   enableIncomeCategorys.sort((a, b) => a.sort - b.sort);
-  //   const enableExpendCategorys: CategoryVO[] = [];
-  //   const disableExpendCategorys: CategoryVO[] = [];
-
-  //   for (const item of expendCategorys) {
-  //     if (item.enable) {
-  //       enableExpendCategorys.push(item);
-  //     } else {
-  //       disableExpendCategorys.push(item);
-  //     }
-  //   }
-
-  //   enableExpendCategorys.sort((a, b) => a.sort - b.sort);
-
-  //   return {
-  //     enableIncomeCategorys,
-  //     disableIncomeCategorys,
-  //     enableExpendCategorys,
-  //     disableExpendCategorys
-  //   }
-  // }, [incomeCategorys, expendCategorys]);
-
-  const test = useCallback(() => {
-    console.log('enableIncomeCategorys', enableIncomeCategorys);
-    console.log('disableIncomeCategorys', disableIncomeCategorys);
-    console.log('enableExpendCategorys', enableExpendCategorys);
-    console.log('disableExpendCategorys', disableExpendCategorys);
-  }, [enableIncomeCategorys, disableIncomeCategorys, enableExpendCategorys, disableExpendCategorys]);
-
   const currentCategoryList = useMemo<CategoryVO[]>(() => {
     const list = type === CategoryTypeEnum.INCOME ? enableIncomeCategorys : enableExpendCategorys;
 
@@ -202,8 +159,6 @@ export default function CategorySetting() {
       <NavBar style={{ position: 'fixed', top: 0, zIndex: 5, width: '100%' }}>
         类别设置
       </NavBar>
-
-      <button style={{ position: 'fixed', top: 0, right: 0, zIndex: 10 }} onClick={test}>测试</button>
 
       <div className="tabs">
         <Segmented

@@ -57,6 +57,7 @@ const Calculator = ({ref, style, onConfirm}: CalculatorProps) => {
 
     useImperativeHandle(ref, () => ({
       setData: (data) => {
+        console.log('set-date: ', data);
         const { date: d, price, remark: r } = data;
         if (d !== undefined) {
           setDate(typeof d === 'string' ? dayjs(d) : d);
@@ -212,7 +213,7 @@ const Calculator = ({ref, style, onConfirm}: CalculatorProps) => {
               {dateIsToday ? (
                 <><span className="icon iconfont icon-rili" />&nbsp;今天</>
               ) : (
-                date.format(dateFormat)
+                date.format('YYYY/MM/DD')
               )}
             </Button>
           </div>

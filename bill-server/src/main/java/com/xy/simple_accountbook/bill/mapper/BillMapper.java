@@ -10,6 +10,7 @@ import java.util.List;
 @Mapper
 public interface BillMapper {
     int insert(@Param("bill") BillEntity bill);
+    int update(@Param("bill") BillEntity bill);
 
     List<BillQueryResult> queryByDateAndUid(@Param("start") String start, @Param("end") String end, @Param("uId") Long uId);
 

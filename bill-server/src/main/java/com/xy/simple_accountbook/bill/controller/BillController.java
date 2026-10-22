@@ -1,6 +1,7 @@
 package com.xy.simple_accountbook.bill.controller;
 
 import com.xy.simple_accountbook.bill.dto.request.bill.InsertBillRequest;
+import com.xy.simple_accountbook.bill.dto.request.bill.UpdateBillRequest;
 import com.xy.simple_accountbook.bill.dto.request.common.IdsRequest;
 import com.xy.simple_accountbook.bill.entity.vo.BaseResponse;
 import com.xy.simple_accountbook.bill.entity.vo.BillVO;
@@ -22,6 +23,12 @@ public class BillController {
     @PostMapping("/bill/insert")
     public BaseResponse<Void> insert(@RequestBody @Valid InsertBillRequest request) {
         billService.insert(request);
+        return BaseResponse.success(null);
+    }
+
+    @PostMapping("/bill/update")
+    public BaseResponse<Void> insert(@RequestBody @Valid UpdateBillRequest request) {
+        billService.update(request);
         return BaseResponse.success(null);
     }
 

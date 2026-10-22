@@ -3,13 +3,17 @@ package com.xy.simple_accountbook.bill.service.impl;
 import com.xy.simple_accountbook.bill.common.context.UserContext;
 import com.xy.simple_accountbook.bill.common.enums.ResponseCodeEnum;
 import com.xy.simple_accountbook.bill.dto.request.bill.InsertBillRequest;
+import com.xy.simple_accountbook.bill.dto.request.bill.UpdateBillRequest;
 import com.xy.simple_accountbook.bill.entity.BillEntity;
 import com.xy.simple_accountbook.bill.entity.BillUserEntity;
 import com.xy.simple_accountbook.bill.entity.CategoryEntity;
+import com.xy.simple_accountbook.bill.entity.UserCategoryEntity;
 import com.xy.simple_accountbook.bill.entity.vo.BillVO;
 import com.xy.simple_accountbook.bill.exception.BusinessException;
 import com.xy.simple_accountbook.bill.mapper.BillMapper;
 import com.xy.simple_accountbook.bill.mapper.BillUserMapper;
+import com.xy.simple_accountbook.bill.mapper.CategoryMapper;
+import com.xy.simple_accountbook.bill.mapper.UserCategoryMapper;
 import com.xy.simple_accountbook.bill.mapper.result.BillQueryResult;
 import com.xy.simple_accountbook.bill.service.BillService;
 import com.xy.simple_accountbook.bill.service.CategoryService;
@@ -21,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,6 +36,8 @@ public class BillServiceImpl implements BillService {
     private final BillMapper billMapper;
     private final BillUserMapper billUserMapper;
     private final CategoryService categoryService;
+    private final CategoryMapper categoryMapper;
+    private final UserCategoryMapper userCategoryMapper;
 
     @Override
     public List<BillQueryResult> queryByDateAndUid (YearMonth yearMonth) {
@@ -78,6 +85,44 @@ public class BillServiceImpl implements BillService {
 
         if (billUserAffected == 0) {
             throw new BusinessException(ResponseCodeEnum.BUSINESS_ERROR, "插入失败");
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void update (UpdateBillRequest bill) {
+        Long uId = UserContext.getUserId();
+
+        BillUserEntity billUserEntity = billUserMapper.findByBillIdAndUId(bill.getId(), uId);
+
+        if (billUserEntity == null) {
+            throw new BusinessException(ResponseCodeEnum.BUSINESS_ERROR, "未找到该账单");
+        }
+
+        CategoryEntity categoryEntity = categoryMapper.findCategoryById(bill.getCategoryId());
+
+        if (categoryEntity == null) {
+            throw new BusinessException(ResponseCodeEnum.BUSINESS_ERROR, "分类不存在");
+        }
+
+        UserCategoryEntity userCategoryEntity = userCategoryMapper.findByCategoryIdAndUid(categoryEntity.getId(), uId);
+
+        if (userCategoryEntity == null) {
+            throw new BusinessException(ResponseCodeEnum.BUSINESS_ERROR, "分类不存在");
+        }
+
+        BillEntity updateBillEntity = new BillEntity();
+        updateBillEntity.setId(billUserEntity.getBillId());
+        updateBillEntity.setType(bill.getType());
+        updateBillEntity.setCategoryId(bill.getCategoryId());
+        updateBillEntity.setPrice(bill.getPrice());
+        updateBillEntity.setDate(bill.getDate());
+        updateBillEntity.setRemark(bill.getRemark());
+
+        int affect = billMapper.update(updateBillEntity);
+
+        if (affect == 0) {
+            throw new BusinessException(ResponseCodeEnum.BUSINESS_ERROR, "修改失败");
         }
     }
 

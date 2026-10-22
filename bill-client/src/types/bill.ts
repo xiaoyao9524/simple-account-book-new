@@ -1,11 +1,11 @@
 import type { BaseResult } from './base';
-import type { CategoryItem } from './category';
+import type { CategoryVO } from './category';
 import type {CategoryType} from '@/enums/categoryEnum'
 export interface BillItem {
   readonly id: number;
   // readonly uid: number;
-  category: CategoryItem;
-  type: number;
+  category: CategoryVO;
+  type: CategoryType;
   price: number;
   date: string;
   remark?: string;
