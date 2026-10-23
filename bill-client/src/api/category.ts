@@ -56,6 +56,16 @@ export const batchDeleteCategory = (ids: number[]) => (
   })
 )
 
+export const checkAllowDeleteCategory = (categoryId: number) => (
+  request<boolean>({
+    method: 'get',
+    url: '/category/checkAllowDelete',
+    params: {
+      categoryId
+    }
+  })
+)
+
 /**old */
 
 export const getAllCategoryList = () =>
@@ -70,13 +80,6 @@ export const updateCategory = (data: UpdateCategoryParams) =>
   request<UpdateCategoryResult>({
     method: 'post',
     url: '/category/updateCategory',
-    data,
-  });
-
-export const getBillListByCategoryId = (data: { categoryId: number }) =>
-  request<GetBillListByCategoryIdResult>({
-    method: 'post',
-    url: '/bill/getBillListByCategoryId',
     data,
   });
 

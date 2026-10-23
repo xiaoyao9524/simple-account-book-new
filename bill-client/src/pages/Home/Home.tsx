@@ -108,7 +108,6 @@ export default function Home() {
   }, [getBillList])
 
   const confirmDelete = useCallback(async (item: BillItem) => {
-    console.log('del: ', item);
     const confirmed = await Dialog.confirm({
       title: '删除',
       content: '你确定要删除该项吗？',

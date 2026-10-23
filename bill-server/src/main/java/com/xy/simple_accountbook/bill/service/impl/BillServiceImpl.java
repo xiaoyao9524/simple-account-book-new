@@ -156,4 +156,12 @@ public class BillServiceImpl implements BillService {
 
         return affectsBillUser;
     }
+
+    @Override
+    public List<BillQueryResult> queryByCategoryId (Long categoryId) {
+        Long uId = UserContext.getUserId();
+
+        return billMapper.queryByCategoryIdAndUid(categoryId, uId);
+
+    }
 }

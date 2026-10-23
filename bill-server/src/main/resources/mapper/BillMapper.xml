@@ -81,4 +81,32 @@
         <foreach collection="ids" item="id" open="(" separator="," close=")">#{id}</foreach>
         AND deleted_at IS NULL
     </update>
+
+    <select id="findBillCountByCategoryIdAndUid" resultType="java.lang.Long">
+        SELECT count(*)
+        FROM bill b
+        INNER JOIN bill_user bu ON bu.bill_id = b.id AND bu.deleted_at IS NULL
+        WHERE b.category_id = #{categoryId}
+        AND bu.u_id = #{uId}
+        AND b.deleted_at IS NULL
+    </select>
+
+    <select id="queryByCategoryIdAndUid" resultMap="billQueryResultMap">
+        SELECT b.id,
+        b.type,
+        b.price,
+        b.remark,
+        b.date,
+        c.id    AS category_id,
+        c.type  AS category_type,
+        c.title AS category_title,
+        c.icon  AS category_icon
+        FROM bill b
+        INNER JOIN bill_user bu ON b.id = bu.bill_id AND bu.deleted_at IS NULL
+        LEFT JOIN category c ON b.category_id = c.id AND c.deleted_at IS NULL
+        WHERE bu.u_id = #{uId}
+        AND b.category_id = #{categoryId}
+        AND b.deleted_at IS NULL
+        ORDER BY b.date DESC
+    </select>
 </mapper>

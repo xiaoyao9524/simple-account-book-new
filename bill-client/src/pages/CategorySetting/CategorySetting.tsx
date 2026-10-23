@@ -1,23 +1,21 @@
 import { useState, useCallback, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 import { Segmented, Toast, Button, Dialog } from 'antd-mobile';
-
 import { DragDropProvider, type DragEndEvent } from '@dnd-kit/react';
 import { isSortable } from '@dnd-kit/react/sortable';
-
 import useCategoryList from '@/hooks/useCategoryList'
 
 import { CategoryTypeEnum, type CategoryType, CategoryEnableEnum, checkIsCategoryType } from '@/enums/categoryEnum'
 import type {
   CategoryVO
 } from '@/types/category';
-import { batchUpdateCategory, batchDeleteCategory } from '@/api/category'
+import { batchUpdateCategory, batchDeleteCategory, checkAllowDeleteCategory } from '@/api/category'
 
 import NavBar from '@/components/NavBar/NavBar';
 import SortableCategoryItem from './components/SortableCategoryItem';
 import './style.scss';
 
-export default function CategorySetting() {
+const CategorySetting = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [type, setType] = useState<CategoryType>(() => {
@@ -79,6 +77,56 @@ export default function CategorySetting() {
   }, [currentCategoryList, updateCategory]);
 
   const handlerDisableCategory = useCallback(async (item: CategoryVO) => {
+
+    const isAllowDelete = await checkAllowDeleteCategory(item.id);
+
+    if (!isAllowDelete?.data) {
+      Dialog.show({
+        content: '删除类别会同时删除该类别下的所有账单，请选择要进行的操作',
+        closeOnAction: true,
+        actions: [
+          {
+            key: 'transfer',
+            text: '转移数据'
+          },
+          {
+            key: 'delete',
+            text: '依然删除',
+            danger: true
+          },
+          {
+            key: 'cancel',
+            text: '取消'
+          },
+        ],
+        onAction: (action) => {
+          switch (action.key) {
+            case 'transfer': {
+              navigate('/deleteCategoryAndBill', {
+                state: {
+                  mode: 'transfer',
+                  categoryId: item.id,
+                  type
+                }
+              })
+              break
+            }
+            case 'delete': {
+              navigate('/deleteCategoryAndBill', {
+                state: {
+                  mode: 'delete',
+                  categoryId: item.id,
+                  type
+                }
+              })
+              break
+            }
+          }
+        }
+      })
+      return // navigate(`/deleteCategoryAndBill?categoryId=${item.id}`)
+    }
+
     const res = await batchUpdateCategory([
       {
         ...item,
@@ -90,7 +138,7 @@ export default function CategorySetting() {
       Toast.show({ content: '保存成功', icon: 'success' });
       updateCategory();
     }
-  }, [updateCategory])
+  }, [navigate, updateCategory])
 
   const handlerConfirmDel = useCallback(async (item: CategoryVO) => {
     const res = await batchDeleteCategory([item.id]);
@@ -114,7 +162,7 @@ export default function CategorySetting() {
             key: 'cancel',
             text: '取消',
             style: {
-              background:' var(--background-color)',
+              background: ' var(--background-color)',
               boxShadow: 'none'
             },
             onClick: () => {
@@ -237,3 +285,5 @@ export default function CategorySetting() {
     </div>
   );
 }
+
+export default CategorySetting;

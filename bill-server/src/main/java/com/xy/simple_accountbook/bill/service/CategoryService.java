@@ -12,4 +12,5 @@ public interface CategoryService {
     void insertCategory(InsertCategoryRequest category);
     void batchUpdateCategory(List<CategoryVO> categoryVos);
     void batchDeleteCategory(List<Long> delIds);
+    Boolean checkAllowDelete(Long categoryId);
 }

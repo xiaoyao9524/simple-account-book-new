@@ -8,10 +8,7 @@ import com.xy.simple_accountbook.bill.service.impl.CategoryServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,6 +23,8 @@ public class CategoryController {
         return BaseResponse.success(categoryVOList);
     }
 
+
+
     @PostMapping("/category/batchUpdateCategory")
     public BaseResponse<Void> batchUpdateCategory (@RequestBody @Valid List<CategoryVO> categoryVos) {
         categoryService.batchUpdateCategory(categoryVos);
@@ -36,6 +35,11 @@ public class CategoryController {
     public BaseResponse<Void> insertCategory (@RequestBody @Valid InsertCategoryRequest request) {
         categoryService.insertCategory(request);
         return BaseResponse.success(null);
+    }
+
+    @GetMapping("/category/checkAllowDelete")
+    public BaseResponse<Boolean> checkAllowDelete (@RequestParam Long categoryId) {
+        return BaseResponse.success(categoryService.checkAllowDelete(categoryId));
     }
 
     @PostMapping("/category/batchDeleteCategory")

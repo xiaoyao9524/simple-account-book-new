@@ -43,4 +43,10 @@ public class BillController {
         int delCounts = billService.batchDelete(request.getIds());
         return BaseResponse.success(delCounts, "成功删除了" + delCounts + "项账单");
     }
+
+    @GetMapping("/bill/queryByCategoryId")
+    public BaseResponse<List<BillQueryResult>> queryByCategoryId (@RequestParam Long categoryId) {
+        List<BillQueryResult> list = billService.queryByCategoryId(categoryId);
+        return BaseResponse.success(list);
+    }
 }

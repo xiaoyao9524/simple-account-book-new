@@ -9,8 +9,10 @@ import com.xy.simple_accountbook.bill.entity.CategoryEntity;
 import com.xy.simple_accountbook.bill.entity.UserCategoryEntity;
 import com.xy.simple_accountbook.bill.entity.vo.CategoryVO;
 import com.xy.simple_accountbook.bill.exception.BusinessException;
+import com.xy.simple_accountbook.bill.mapper.BillMapper;
 import com.xy.simple_accountbook.bill.mapper.CategoryMapper;
 import com.xy.simple_accountbook.bill.mapper.UserCategoryMapper;
+import com.xy.simple_accountbook.bill.service.BillService;
 import com.xy.simple_accountbook.bill.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,8 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryMapper categoryMapper;
 
     private final UserCategoryMapper userCategoryMapper;
+
+    private final BillMapper billMapper;
 
     @Override
     public List<CategoryVO> queryUserCategory() {
@@ -200,5 +204,14 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryEntity findCategoryById (Long id) {
         return categoryMapper.findCategoryById(id);
+    }
+
+    @Override
+    public Boolean checkAllowDelete (Long categoryId) {
+        Long uId = UserContext.getUserId();
+
+        Long count = billMapper.findBillCountByCategoryIdAndUid(categoryId, uId);
+
+        return count <= 0;
     }
 }

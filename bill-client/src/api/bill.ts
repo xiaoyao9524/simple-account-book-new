@@ -13,14 +13,14 @@ export const insertBill = (data: InsertBillProps) =>
     data,
   });
 
-  export const updateBill = (data: UpdateBillProps) =>
+export const updateBill = (data: UpdateBillProps) =>
   request({
     method: 'post',
     url: '/bill/update',
     data,
   });
 
-  export const batchDeleteBill = (ids: number[]) =>
+export const batchDeleteBill = (ids: number[]) =>
   request<number>({
     method: 'post',
     url: '/bill/batchDelete',
@@ -35,5 +35,12 @@ export const getBillListByDate = (params: GetBillListByDateRequestProps) =>
     url: '/bill/list',
     params
   });
+
+  export const getBillByCategoryId = (params: { categoryId: number }) =>
+    request<BillItem[]>({
+      method: 'get',
+      url: '/bill/queryByCategoryId',
+      params
+    });
 
 
