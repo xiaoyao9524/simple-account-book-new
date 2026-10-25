@@ -174,12 +174,12 @@ public class BillServiceImpl implements BillService {
         Long uId = UserContext.getUserId();
         CategoryEntity oldCategoryEntity = categoryMapper.findCategoryById(categoryId);
         if (oldCategoryEntity == null || (oldCategoryEntity.getUId() != null && !oldCategoryEntity.getUId().equals(uId))) {
-            throw new BusinessException(ResponseCodeEnum.BUSINESS_ERROR, "分类不存在1");
+            throw new BusinessException(ResponseCodeEnum.BUSINESS_ERROR, "分类不存在");
         }
 
         CategoryEntity newCategoryEntity = categoryMapper.findCategoryById(newCategoryId);
         if (newCategoryEntity == null || (newCategoryEntity.getUId() != null && !newCategoryEntity.getUId().equals(uId))) {
-            throw new BusinessException(ResponseCodeEnum.BUSINESS_ERROR, "分类不存在2");
+            throw new BusinessException(ResponseCodeEnum.BUSINESS_ERROR, "分类不存在");
         }
 
         List<BillQueryResult> transferBillEntitys = billMapper.queryByCategoryIdAndUid(categoryId, uId);
@@ -203,7 +203,7 @@ public class BillServiceImpl implements BillService {
 
             UserCategoryEntity delUserCategory = userCategoryMapper.findByCategoryIdAndUid(categoryId, uId);
             if (delUserCategory == null) {
-                throw new BusinessException(ResponseCodeEnum.BUSINESS_ERROR, "该分类不存在3");
+                throw new BusinessException(ResponseCodeEnum.BUSINESS_ERROR, "该分类不存在");
             }
             List<Long> delUserCategoryIdList = new ArrayList<Long>();
             delUserCategoryIdList.add(delUserCategory.getId());
@@ -214,7 +214,7 @@ public class BillServiceImpl implements BillService {
             // 删默认分类
             UserCategoryEntity delUserCategory = userCategoryMapper.findByCategoryIdAndUid(categoryId, uId);
             if (delUserCategory == null) {
-                throw new BusinessException(ResponseCodeEnum.BUSINESS_ERROR, "该分类不存在4");
+                throw new BusinessException(ResponseCodeEnum.BUSINESS_ERROR, "该分类不存在");
             }
             List<Long> disabledUserCategoryIds = new ArrayList<>();
             disabledUserCategoryIds.add(delUserCategory.getId());
