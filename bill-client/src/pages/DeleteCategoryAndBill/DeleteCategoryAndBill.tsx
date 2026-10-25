@@ -1,18 +1,20 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router';
-import { List, Button, Dialog, Toast, Modal } from 'antd-mobile';
-// import { useStore } from '@/store/useStore';
+import { List, Button, Dialog, Toast } from 'antd-mobile';
+
 import useCategoryStore from '@/store/useCategoryStore';
-import { getBillByCategoryId, transferCategory } from '@/api/bill';
 import useQuery from '@/hooks/useQuery';
+
 import type { BillItem } from '@/types/bill';
-import './style.scss';
+import type { CategoryVO } from '@/types/category';
 import { CategoryTypeEnum, type CategoryType } from '@/enums/categoryEnum';
 
 import NavBar from '@/components/NavBar/NavBar';
 import CategorySelect, { type CategorySelectRef } from '@/components/CategorySelect';
-import type { CategoryVO } from '@/types/category';
 
+import { getBillByCategoryId, transferCategory, deleteBillAndCategory } from '@/api/bill';
+
+import './style.scss';
 export interface LocationType {
   mode: 'transfer' | 'deleted',
   type: CategoryType,
@@ -76,17 +78,15 @@ const DeleteCategoryAndBill = () => {
 
   const handlerDelete = useCallback(
     async (categoryId: number) => {
-      // try {
-      //   const res = await deleteCategoryAndBill(categoryId);
-      //   if (res.status === 200 && res.data) {
-      //     await updateUserCategory();
-      //     navigate(-1);
-      //   } else {
-      //     Toast.show({ content: res.message, icon: 'fail' });
-      //   }
-      // } catch (err) {
-      //   Toast.show({ content: (err as Error).message, icon: 'fail' });
-      // }
+      const res = await deleteBillAndCategory({categoryId});
+
+      if (res) {
+        Toast.show({
+          content: '转移成功'
+        })
+        updateUserCategory();
+        navigate(-1);
+      }
     },
     [updateUserCategory, navigate]
   );
@@ -95,9 +95,9 @@ const DeleteCategoryAndBill = () => {
     Dialog.confirm({
       title: '警告',
       content: '确定要删除该分类以及该分类下全部记账信息吗？',
-      onConfirm: () => handlerDelete(Number(query.categoryId)),
+      onConfirm: () => handlerDelete(state.categoryId),
     });
-  }, [handlerDelete, query.categoryId]);
+  }, [handlerDelete, state.categoryId]);
 
   const handlerTransferConfirm = useCallback(async (category: CategoryVO) => {
     if (category.id === state.categoryId) {
@@ -128,12 +128,6 @@ const DeleteCategoryAndBill = () => {
       }
     }
   }, [state.categoryId, updateUserCategory, navigate])
-
-  useEffect(() => {
-    // if (!query.categoryId) {
-    //   navigate(-1);
-    // }
-  }, [query.categoryId, navigate]);
 
   return (
     <div className="delete-category-and-bill">

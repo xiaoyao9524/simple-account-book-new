@@ -9,7 +9,6 @@ import com.xy.simple_accountbook.bill.entity.BillEntity;
 import com.xy.simple_accountbook.bill.entity.BillUserEntity;
 import com.xy.simple_accountbook.bill.entity.CategoryEntity;
 import com.xy.simple_accountbook.bill.entity.UserCategoryEntity;
-import com.xy.simple_accountbook.bill.entity.vo.BillVO;
 import com.xy.simple_accountbook.bill.exception.BusinessException;
 import com.xy.simple_accountbook.bill.mapper.BillMapper;
 import com.xy.simple_accountbook.bill.mapper.BillUserMapper;
@@ -17,13 +16,10 @@ import com.xy.simple_accountbook.bill.mapper.CategoryMapper;
 import com.xy.simple_accountbook.bill.mapper.UserCategoryMapper;
 import com.xy.simple_accountbook.bill.mapper.result.BillQueryResult;
 import com.xy.simple_accountbook.bill.service.BillService;
-import com.xy.simple_accountbook.bill.service.CategoryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -224,5 +220,32 @@ public class BillServiceImpl implements BillService {
 
 
         return affect != 0;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteBillAndCategory(Long categoryId){
+        Long uId = UserContext.getUserId();
+        CategoryEntity delCategoryEntity = categoryMapper.findCategoryById(categoryId);
+
+        if (delCategoryEntity == null || (delCategoryEntity.getUId() != null && !delCategoryEntity.getUId().equals(uId))) {
+            throw new BusinessException(ResponseCodeEnum.BUSINESS_ERROR, "该分类不存在");
+        }
+
+        List<BillQueryResult> delBillList = billMapper.queryByCategoryIdAndUid(categoryId, uId);
+
+
+
+        UserCategoryEntity delUserCategoryEntity = userCategoryMapper.findByCategoryIdAndUid(categoryId, uId);
+
+        if (delUserCategoryEntity == null) {
+            throw new BusinessException(ResponseCodeEnum.BUSINESS_ERROR, "该分类不存在");
+        }
+
+        if (!delBillList.isEmpty()) {
+            billMapper.batchDelete(delBillList.stream().map(BillQueryResult::getId).collect(Collectors.toList()));
+        }
+
+        userCategoryMapper.batchUpdateEnable(List.of(delUserCategoryEntity.getId()), CategoryEnableEnum.DISABLED,  uId);
     }
 }

@@ -1,5 +1,6 @@
 package com.xy.simple_accountbook.bill.controller;
 
+import com.xy.simple_accountbook.bill.dto.request.bill.DeleteBillAndCategoryRequest;
 import com.xy.simple_accountbook.bill.dto.request.bill.InsertBillRequest;
 import com.xy.simple_accountbook.bill.dto.request.bill.TransferCategoryRequest;
 import com.xy.simple_accountbook.bill.dto.request.bill.UpdateBillRequest;
@@ -54,5 +55,11 @@ public class BillController {
     @PostMapping("/bill/transferCategory")
     public BaseResponse<Boolean> transferCategory (@RequestBody @Valid TransferCategoryRequest request) {
         return BaseResponse.success(billService.transferCategoryId(request.getCategoryId(), request.getNewCategoryId()));
+    }
+
+    @PostMapping("/bill/deleteBillAndCategory")
+    public BaseResponse<Void> deleteBillAndCategory (@RequestBody @Valid DeleteBillAndCategoryRequest request) {
+        billService.deleteBillAndCategory(request.getCategoryId());
+        return BaseResponse.success(null);
     }
 }

@@ -51,3 +51,11 @@ export const transferCategory = (data: {categoryId: number, newCategoryId: numbe
     data
   })
 )
+
+export const deleteBillAndCategory = (data: {categoryId: number}) => (
+  request({
+    method: 'post',
+    url: '/bill/deleteBillAndCategory',
+    data
+  })
+)
