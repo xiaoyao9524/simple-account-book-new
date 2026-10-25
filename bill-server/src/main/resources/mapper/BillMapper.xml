@@ -109,4 +109,14 @@
         AND b.deleted_at IS NULL
         ORDER BY b.date DESC
     </select>
+
+    <update id="batchUpdateCategoryId">
+        UPDATE bill
+        SET category_id = #{categoryId}
+        WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        AND deleted_at IS NULL
+    </update>
 </mapper>

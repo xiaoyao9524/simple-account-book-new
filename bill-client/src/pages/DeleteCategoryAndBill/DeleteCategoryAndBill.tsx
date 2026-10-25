@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 import { List, Button, Dialog, Toast, Modal } from 'antd-mobile';
-import { useStore } from '@/store/useStore';
-import { getBillByCategoryId } from '@/api/bill';
+// import { useStore } from '@/store/useStore';
+import useCategoryStore from '@/store/useCategoryStore';
+import { getBillByCategoryId, transferCategory } from '@/api/bill';
 import useQuery from '@/hooks/useQuery';
 import type { BillItem } from '@/types/bill';
 import './style.scss';
@@ -31,7 +32,7 @@ const DeleteCategoryAndBill = () => {
     return CategoryTypeEnum.INCOME
   }, [state.type])
   const navigate = useNavigate();
-  const updateUserCategory = useStore((s) => s.updateUserCategory);
+  const updateUserCategory = useCategoryStore(s => s.updateList);
 
   const [list, setList] = useState<BillItem[]>([]);
 
@@ -111,9 +112,22 @@ const DeleteCategoryAndBill = () => {
     })
 
     if (result) {
-      console.log('confirm...:', category);
+      const param = {
+        categoryId: state.categoryId,
+        newCategoryId: category.id
+      }
+
+      const res = await transferCategory(param)
+
+      if (res) {
+        Toast.show({
+          content: '转移成功'
+        })
+        updateUserCategory();
+        navigate(-1);
+      }
     }
-  }, [])
+  }, [state.categoryId, updateUserCategory, navigate])
 
   useEffect(() => {
     // if (!query.categoryId) {

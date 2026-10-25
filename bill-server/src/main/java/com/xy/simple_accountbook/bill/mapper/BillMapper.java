@@ -19,4 +19,5 @@ public interface BillMapper {
 
     Long findBillCountByCategoryIdAndUid(@Param("categoryId") Long categoryId, @Param("uId")Long uId);
     List<BillQueryResult> queryByCategoryIdAndUid(@Param("categoryId") Long categoryId, @Param("uId")Long uId);
+    int batchUpdateCategoryId(@Param("ids") List<Long> ids, @Param("categoryId") Long categoryId);
 }

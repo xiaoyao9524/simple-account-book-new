@@ -92,6 +92,17 @@
         AND deleted_at IS NULL
     </update>
 
+    <update id="batchUpdateEnable">
+        UPDATE user_category
+        SET enable = #{enable}
+        WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        AND deleted_at IS NULL
+        AND u_id = #{uId}
+    </update>
+
     <update id="batchDeleteUserCategory">
         UPDATE user_category
         SET deleted_at = NOW()

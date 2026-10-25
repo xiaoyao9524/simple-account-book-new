@@ -138,7 +138,7 @@ const CategorySetting = () => {
       Toast.show({ content: '保存成功', icon: 'success' });
       updateCategory();
     }
-  }, [navigate, updateCategory])
+  }, [navigate, updateCategory, type])
 
   const handlerConfirmDel = useCallback(async (item: CategoryVO) => {
     const res = await batchDeleteCategory([item.id]);

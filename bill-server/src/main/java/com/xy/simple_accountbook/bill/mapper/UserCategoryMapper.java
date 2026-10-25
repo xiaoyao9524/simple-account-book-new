@@ -1,5 +1,6 @@
 package com.xy.simple_accountbook.bill.mapper;
 
+import com.xy.simple_accountbook.bill.common.enums.CategoryEnableEnum;
 import com.xy.simple_accountbook.bill.common.enums.CategoryTypeEnum;
 import com.xy.simple_accountbook.bill.entity.UserCategoryEntity;
 import org.apache.ibatis.annotations.Mapper;
@@ -24,4 +25,6 @@ public interface UserCategoryMapper {
     int batchUpdateUserCategory(@Param("categoryList") List<UserCategoryEntity> categoryList);
 
     int batchDeleteUserCategory(@Param("ids") List<Long> ids, @Param("uId") Long uId);
+
+    int batchUpdateEnable(@Param("ids")List<Long> ids, @Param("enable") CategoryEnableEnum enable, @Param("uId") Long uId);
 }

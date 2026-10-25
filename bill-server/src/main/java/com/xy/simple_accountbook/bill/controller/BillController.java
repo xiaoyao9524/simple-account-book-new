@@ -1,6 +1,7 @@
 package com.xy.simple_accountbook.bill.controller;
 
 import com.xy.simple_accountbook.bill.dto.request.bill.InsertBillRequest;
+import com.xy.simple_accountbook.bill.dto.request.bill.TransferCategoryRequest;
 import com.xy.simple_accountbook.bill.dto.request.bill.UpdateBillRequest;
 import com.xy.simple_accountbook.bill.dto.request.common.IdsRequest;
 import com.xy.simple_accountbook.bill.entity.vo.BaseResponse;
@@ -48,5 +49,10 @@ public class BillController {
     public BaseResponse<List<BillQueryResult>> queryByCategoryId (@RequestParam Long categoryId) {
         List<BillQueryResult> list = billService.queryByCategoryId(categoryId);
         return BaseResponse.success(list);
+    }
+
+    @PostMapping("/bill/transferCategory")
+    public BaseResponse<Boolean> transferCategory (@RequestBody @Valid TransferCategoryRequest request) {
+        return BaseResponse.success(billService.transferCategoryId(request.getCategoryId(), request.getNewCategoryId()));
     }
 }

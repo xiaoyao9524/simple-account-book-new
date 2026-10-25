@@ -44,3 +44,10 @@ export const getBillListByDate = (params: GetBillListByDateRequestProps) =>
     });
 
 
+export const transferCategory = (data: {categoryId: number, newCategoryId: number}) => (
+  request<boolean>({
+    method: 'post',
+    url: '/bill/transferCategory',
+    data
+  })
+)

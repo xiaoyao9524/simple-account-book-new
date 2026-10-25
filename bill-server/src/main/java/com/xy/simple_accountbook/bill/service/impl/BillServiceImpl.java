@@ -1,6 +1,7 @@
 package com.xy.simple_accountbook.bill.service.impl;
 
 import com.xy.simple_accountbook.bill.common.context.UserContext;
+import com.xy.simple_accountbook.bill.common.enums.CategoryEnableEnum;
 import com.xy.simple_accountbook.bill.common.enums.ResponseCodeEnum;
 import com.xy.simple_accountbook.bill.dto.request.bill.InsertBillRequest;
 import com.xy.simple_accountbook.bill.dto.request.bill.UpdateBillRequest;
@@ -35,12 +36,11 @@ public class BillServiceImpl implements BillService {
 
     private final BillMapper billMapper;
     private final BillUserMapper billUserMapper;
-    private final CategoryService categoryService;
     private final CategoryMapper categoryMapper;
     private final UserCategoryMapper userCategoryMapper;
 
     @Override
-    public List<BillQueryResult> queryByDateAndUid (YearMonth yearMonth) {
+    public List<BillQueryResult> queryByDateAndUid(YearMonth yearMonth) {
         Long uId = UserContext.getUserId();
 //        YearMonth yearMonth = YearMonth.from(date);
 
@@ -52,10 +52,10 @@ public class BillServiceImpl implements BillService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void insert (InsertBillRequest bill) {
+    public void insert(InsertBillRequest bill) {
         Long uId = UserContext.getUserId();
 
-        CategoryEntity categoryEntity = categoryService.findCategoryById(bill.getCategoryId());
+        CategoryEntity categoryEntity = categoryMapper.findCategoryById(bill.getCategoryId());
 
         if (categoryEntity == null || (categoryEntity.getUId() != null && !categoryEntity.getUId().equals(uId))) {
             throw new BusinessException(ResponseCodeEnum.BUSINESS_ERROR, "分类不存在");
@@ -68,7 +68,7 @@ public class BillServiceImpl implements BillService {
         billEntity.setPrice(bill.getPrice());
         billEntity.setDate(bill.getDate());
         String remark = bill.getRemark();
-        billEntity.setRemark(remark == null?  "" : remark);
+        billEntity.setRemark(remark == null ? "" : remark);
 
         int affected = billMapper.insert(billEntity);
 
@@ -90,7 +90,7 @@ public class BillServiceImpl implements BillService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void update (UpdateBillRequest bill) {
+    public void update(UpdateBillRequest bill) {
         Long uId = UserContext.getUserId();
 
         BillUserEntity billUserEntity = billUserMapper.findByBillIdAndUId(bill.getId(), uId);
@@ -128,7 +128,7 @@ public class BillServiceImpl implements BillService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Integer batchDelete (List<Long> delBillIds) {
+    public Integer batchDelete(List<Long> delBillIds) {
         if (delBillIds == null || delBillIds.isEmpty()) {
             return 0;
         }
@@ -158,10 +158,71 @@ public class BillServiceImpl implements BillService {
     }
 
     @Override
-    public List<BillQueryResult> queryByCategoryId (Long categoryId) {
+    public List<BillQueryResult> queryByCategoryId(Long categoryId) {
         Long uId = UserContext.getUserId();
 
         return billMapper.queryByCategoryIdAndUid(categoryId, uId);
 
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean transferCategoryId(Long categoryId, Long newCategoryId) {
+        if (categoryId.equals(newCategoryId)) {
+            throw new BusinessException(ResponseCodeEnum.BUSINESS_ERROR, "新旧分类不能相同");
+        }
+        Long uId = UserContext.getUserId();
+        CategoryEntity oldCategoryEntity = categoryMapper.findCategoryById(categoryId);
+        if (oldCategoryEntity == null || (oldCategoryEntity.getUId() != null && !oldCategoryEntity.getUId().equals(uId))) {
+            throw new BusinessException(ResponseCodeEnum.BUSINESS_ERROR, "分类不存在1");
+        }
+
+        CategoryEntity newCategoryEntity = categoryMapper.findCategoryById(newCategoryId);
+        if (newCategoryEntity == null || (newCategoryEntity.getUId() != null && !newCategoryEntity.getUId().equals(uId))) {
+            throw new BusinessException(ResponseCodeEnum.BUSINESS_ERROR, "分类不存在2");
+        }
+
+        List<BillQueryResult> transferBillEntitys = billMapper.queryByCategoryIdAndUid(categoryId, uId);
+        if (transferBillEntitys.isEmpty()) {
+            throw new BusinessException(ResponseCodeEnum.BUSINESS_ERROR, "未查询到账单");
+        }
+
+        List<Long> transferBillIds = transferBillEntitys.stream().map(BillQueryResult::getId).toList();
+
+        int affect = billMapper.batchUpdateCategoryId(transferBillIds, newCategoryId);
+
+        if (affect != transferBillIds.size()) {
+            throw new BusinessException(ResponseCodeEnum.BUSINESS_ERROR, "账单转移失败");
+        }
+
+        // 最后还得把category删除
+        if (oldCategoryEntity.getUId() != null) {
+            // 删自建分类
+//            List<Long> delCategoryIdList = new ArrayList<Long>();
+//            delCategoryIdList.add(categoryId);
+
+            UserCategoryEntity delUserCategory = userCategoryMapper.findByCategoryIdAndUid(categoryId, uId);
+            if (delUserCategory == null) {
+                throw new BusinessException(ResponseCodeEnum.BUSINESS_ERROR, "该分类不存在3");
+            }
+            List<Long> delUserCategoryIdList = new ArrayList<Long>();
+            delUserCategoryIdList.add(delUserCategory.getId());
+
+//            categoryMapper.batchDeleteCategory(delCategoryIdList, uId);
+            userCategoryMapper.batchUpdateEnable(delUserCategoryIdList, CategoryEnableEnum.DISABLED, uId);
+        } else {
+            // 删默认分类
+            UserCategoryEntity delUserCategory = userCategoryMapper.findByCategoryIdAndUid(categoryId, uId);
+            if (delUserCategory == null) {
+                throw new BusinessException(ResponseCodeEnum.BUSINESS_ERROR, "该分类不存在4");
+            }
+            List<Long> disabledUserCategoryIds = new ArrayList<>();
+            disabledUserCategoryIds.add(delUserCategory.getId());
+            userCategoryMapper.batchUpdateEnable(disabledUserCategoryIds, CategoryEnableEnum.DISABLED, uId);
+        }
+
+
+
+        return affect != 0;
     }
 }
