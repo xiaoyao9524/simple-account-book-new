@@ -1,3 +1,176 @@
 .about {
-  
+  min-height: 100vh;
+  background: var(--bg-page);
+
+  .content {
+    padding: 16px;
+  }
+
+  .about-header {
+    text-align: center;
+    padding: 8px 0 24px;
+
+    .app-logo {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto;
+      border-radius: var(--radius-xl);
+      background: var(--theme-gradient);
+      box-shadow: var(--shadow-theme);
+      color: #fff;
+      font-size: 34px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .app-name {
+      margin: 14px 0 0;
+      font-size: 22px;
+      line-height: 30px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .app-version {
+      margin-top: 4px;
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+
+    .app-slogan {
+      margin-top: 8px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+  }
+
+  .about-card {
+    margin-bottom: 16px;
+    padding: 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+
+    .card-title {
+      margin: 0 0 10px;
+      font-size: 15px;
+      line-height: 22px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .card-text {
+      font-size: 13px;
+      line-height: 22px;
+      color: var(--text-secondary);
+    }
+  }
+
+  .project-note {
+    background: var(--theme-gradient-light);
+    border-color: rgba(99, 102, 241, 0.16);
+
+    .card-title {
+      color: var(--theme-dark);
+    }
+
+    .card-text {
+      color: var(--theme-dark);
+    }
+  }
+
+  .feature-list {
+    margin-top: 4px;
+
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+
+      & + .feature-item {
+        margin-top: 12px;
+      }
+
+      .dot {
+        flex: none;
+        width: 6px;
+        height: 6px;
+        margin: 8px 8px 0 0;
+        border-radius: var(--radius-full);
+        background: var(--base-theme-color);
+      }
+
+      span {
+        font-size: 13px;
+        line-height: 22px;
+        color: var(--text-secondary);
+      }
+
+      strong {
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+    }
+  }
+
+  .tech-group {
+    & + .tech-group {
+      margin-top: 14px;
+    }
+
+    .tech-label {
+      margin-bottom: 8px;
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+
+    .tech-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tech-tag {
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      background: var(--theme-gradient-light);
+      color: var(--theme-dark);
+      font-size: 12px;
+      font-weight: 500;
+    }
+  }
+
+  .meta-list {
+    .meta-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 9px 0;
+      font-size: 13px;
+      line-height: 20px;
+
+      & + .meta-item {
+        border-top: 1px solid var(--border-light);
+      }
+
+      .meta-label {
+        color: var(--text-secondary);
+      }
+
+      .meta-value {
+        color: var(--text-primary);
+        font-weight: 500;
+      }
+    }
+  }
+
+  .about-footer {
+    padding: 4px 0 16px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 20px;
+    color: var(--text-tertiary);
+  }
 }
