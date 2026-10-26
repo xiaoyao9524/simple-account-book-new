@@ -3,7 +3,6 @@ import { useNavigate, useLocation } from 'react-router';
 import { List, Button, Dialog, Toast } from 'antd-mobile';
 
 import useCategoryStore from '@/store/useCategoryStore';
-import useQuery from '@/hooks/useQuery';
 
 import type { BillItem } from '@/types/bill';
 import type { CategoryVO } from '@/types/category';
@@ -22,7 +21,6 @@ export interface LocationType {
 }
 
 const DeleteCategoryAndBill = () => {
-  const query = useQuery<{ categoryId?: string, type?: string }>();
   const location = useLocation();
   const state = location.state as LocationType;
   const categorySelectInstance = useRef<CategorySelectRef>(null);

@@ -8,6 +8,14 @@
         SELECT id, username, avatar
         FROM user
         WHERE username = #{username}
+        AND deleted_at IS NULL
+    </select>
+
+    <select id="findByUId" resultType="com.xy.simple_accountbook.bill.entity.UserEntity">
+        SELECT id, username, avatar, create_time
+        FROM user
+        WHERE id = #{uId}
+        AND deleted_at IS NULL
     </select>
 
     <!--    查询userInfo进行登录校验，带password -->

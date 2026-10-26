@@ -1,162 +1,76 @@
-# 简单记账 (Simple Account Book)
+# 简单记账（Simple Accounting）
 
-一个基于 **Vite + Spring Boot** 全栈重构的移动端记账应用，前端采用 React 19 + TypeScript，后端采用 Spring Boot 4 + Java 21，提供完整的记账、分类管理与用户认证功能。
+一个前后端分离的个人记账应用，用于记录日常收支、管理分类、按时间查看账单。项目以完整走通"前端 → 接口 → 数据"全链路为目标，适合作为全栈开发的实践作品。
 
-## 项目亮点 — Vite + Spring Boot 重构
+**技术栈**：React 18 + TypeScript + Vite + React Router + axios ｜ Spring Boot + MyBatis-Plus + MySQL
 
-本项目从旧版架构迁移至现代化技术栈，核心重构点如下：
+---
 
-### 前端 — Vite 重构
+## 功能
 
-| 旧方案 | 重构后 |
-|--------|--------|
-| 传统打包工具 | **Vite 8** 极速冷启动 + HMR 热更新 |
-| JS / 旧框架 | **React 19 + TypeScript 6** 类型安全开发 |
-| 手动状态管理 | **Zustand** 轻量状态管理 |
-| 手写样式 | **SCSS 模块化** + iconfont 图标体系 |
-| 无编译优化 | **React Compiler** 自动优化渲染性能 |
+- **收支记录**：新增、编辑、删除、查询账单，记录金额、类别、时间、备注
+- **分类管理**：支出 / 收入各自维护类别，支持自定义类别名称与图标
+- **按时间筛选**：按月查看账单列表
+- **数据概览**：汇总每月收入、支出与结余
+- **登录鉴权**：token 校验，401 自动清理登录态
 
-- 利用 Vite 的原生 ESM 开发服务器，启动速度从秒级降至毫秒级
-- 通过 `@vitejs/plugin-react` + `@rolldown/plugin-babel` 启用 React Compiler，减少手动 memo 优化
-- Vite 开发代理配置 (`/api` → `localhost:8080`)，前后端无缝联调
-- `@dnd-kit` 拖拽排序，移动端交互体验流畅
+## 技术栈
 
-### 后端 — Spring Boot 重构
+**前端**
 
-| 旧方案 | 重构后 |
-|--------|--------|
-| 手写 Servlet / 旧框架 | **Spring Boot 4.1.1** 约定优于配置 |
-| 手动 JDBC | **MyBatis Spring Boot Starter** 数据访问层 |
-| Session 认证 | **JWT (jjwt)** 无状态 Token 认证 |
-| 手动参数校验 | **Spring Validation** 声明式校验 |
-| 无全局异常处理 | **全局异常处理器 + 统一响应封装** |
-| 手动 SQL 字段填充 | **MyBatis 自动填充拦截器** |
+| 技术             | 用途                                                                                 |
+| ---------------- | ------------------------------------------------------------------------------------ |
+| React 18 + Hooks | 组件状态与副作用管理（`useState` / `useEffect` / `useMemo` / `useCallback`） |
+| TypeScript       | 类型约束，枚举与响应体类型定义                                                       |
+| React Router v6  | 页面路由、参数传递（query / state）                                                  |
+| axios            | 统一请求封装，拦截器处理 token 与错误提示                                            |
+| antd-mobile      | 移动端 UI 组件                                                                       |
+| Vite             | 构建与开发服务器                                                                     |
 
-- Java 21 虚拟线程支持，高并发场景下性能更优
-- 标准分层架构：Controller → Service → Mapper，职责清晰
-- JWT 拦截器统一鉴权，UserContext 线程隔离用户信息
-- AOP 切面 + Validation 参数校验，减少重复代码
-- Jackson 统一日期格式化与时区处理
+**后端**
 
-## 技术栈总览
-
-### 前端 (`bill-client`)
-
-- **构建工具**: Vite 8
-- **框架**: React 19 + TypeScript 6
-- **UI 组件**: Ant Design Mobile 5
-- **路由**: React Router DOM 7
-- **状态管理**: Zustand 5
-- **HTTP 请求**: Axios
-- **拖拽交互**: @dnd-kit/core + @dnd-kit/sortable
-- **表单管理**: React Hook Form 7
-- **样式方案**: SCSS + iconfont 图标
-- **编译优化**: React Compiler (Babel 插件)
-- **代码规范**: ESLint + TypeScript ESLint
-
-### 后端 (`bill-server`)
-
-- **框架**: Spring Boot 4.1.1
-- **语言**: Java 21
-- **ORM**: MyBatis Spring Boot Starter 4.1
-- **数据库**: MySQL
-- **认证**: JWT (jjwt 0.12.6)
-- **工具库**: Lombok
-- **AOP**: spring-boot-starter-aop
-- **参数校验**: spring-boot-starter-validation
-- **构建工具**: Maven
-
-## 功能模块
-
-- **用户认证** — 注册 / 登录，JWT Token 鉴权
-- **记账** — 收支记账，计算器组件辅助输入
-- **分类管理** — 自定义收支分类，拖拽排序
-- **首页** — 账单列表展示
-- **个人中心** — 用户信息管理
-- **响应式适配** — 移动端优先，自动识别设备类型
-
-## 项目结构
-
-```
-simple-account-book-new/
-├── bill-client/                  # 前端 (Vite + React)
-│   ├── src/
-│   │   ├── api/                  # API 请求层
-│   │   ├── components/            # 通用组件 (计算器/导航栏/底部TabBar)
-│   │   ├── pages/                # 页面组件 (首页/记账/登录/注册/分类设置...)
-│   │   ├── store/                # Zustand 状态管理
-│   │   ├── types/                # TypeScript 类型定义
-│   │   ├── utils/                # 工具函数
-│   │   ├── styles/               # 全局样式 + iconfont 字体图标
-│   │   └── hooks/                # 自定义 Hooks
-│   ├── vite.config.ts            # Vite 配置 (代理/别名/插件)
-│   └── package.json
-│
-├── bill-server/                  # 后端 (Spring Boot)
-│   ├── src/main/java/com/xy/simple_accountbook/bill/
-│   │   ├── controller/           # 控制层
-│   │   ├── service/               # 业务层 (接口 + 实现)
-│   │   ├── mapper/                # 数据访问层
-│   │   ├── entity/                # 实体类 + VO
-│   │   ├── dto/                   # 请求/响应 DTO
-│   │   ├── config/                # 配置 (拦截器/异常处理/Jackson)
-│   │   └── common/                # 公共组件 (上下文/枚举/工具)
-│   ├── src/main/resources/
-│   │   ├── application.properties # 应用配置
-│   │   └── mapper/                # MyBatis XML 映射
-│   └── pom.xml
-│
-└── README.md
-```
+| 技术         | 用途                                      |
+| ------------ | ----------------------------------------- |
+| Spring Boot  | 分层架构（Controller / Service / Mapper） |
+| MyBatis-Plus | 数据访问与 CRUD                           |
+| MySQL        | 数据存储                                  |
+| JWT          | 登录鉴权                                  |
 
 ## 快速开始
 
-### 环境要求
-
-- Node.js >= 18
-- Java 21
-- MySQL 8+
-- Maven 3.9+
-
-### 后端启动
+**前端**
 
 ```bash
-cd bill-server
-
-# 配置数据库连接 (src/main/resources/application.properties)
-# spring.datasource.url = jdbc:mysql://127.0.0.1:3306/bill
-# spring.datasource.username = root
-# spring.datasource.password = your_password
-
-# 启动 Spring Boot 服务 (默认端口 8080)
-mvnw spring-boot:run
+pnpm install
+pnpm dev
 ```
 
-### 前端启动
+后端
 
 ```bash
-cd bill-client
+# 配置 application.yml 中的数据库连接
 
-# 安装依赖
-npm install
-
-# 启动 Vite 开发服务器 (默认端口 5173)
-npm run dev
-
-# 构建生产包
-npm run build
-
-# 预览生产构建
-npm run preview
+mvn spring-boot:run
 ```
 
-浏览器访问 `http://localhost:5173` 即可使用，Vite 开发服务器已配置 `/api` 代理转发至后端 `http://localhost:8080`。
 
-## 重构收益
 
-- **开发体验** — Vite 毫秒级 HMR 热更新，改完代码即时可见
-- **类型安全** — 前后端均采用强类型 (TypeScript + Java)，减少运行时错误
-- **性能优化** — React Compiler 自动优化 + Java 21 虚拟线程，前后端双重提速
-- **架构清晰** — 前端组件化 + 后端标准分层，可维护性大幅提升
-- **认证升级** — 从 Session 迁移至 JWT 无状态认证，支持横向扩展
-- **开发效率** — Lombok 消除样板代码，Validation 声明式校验，AOP 统一切面
+## 一些实现细节
+
+* **统一响应体** ：后端返回 `{ code, message, data }`，前端在 axios 拦截器中统一处理业务码与错误提示。
+* **登录态** ：请求拦截器自动携带 token；响应 401 时清理本地登录态并跳转登录页。
+* **类型安全** ：枚举用 `as const` 定义，配合类型守卫（如 `checkIsCategoryType`）在运行时校验来自 URL / state 的参数，避免隐式转换带来的误判。
+* **路由传参** ：需要刷新保留、可分享的参数走 query；页间临时对象走 `state`，并在接收处做类型收窄。
+* 
+
+## 后续计划
+
+* **□ **图表统计（分类占比、月度趋势）
+* **□ **预算设置与超支提醒
+* **□ **数据导出
+
+---
+
+## 关于这个项目
+
+这是我在学习全栈开发过程中完成的实践项目，重点在于把 React 的状态管理、路由、请求封装与 Spring Boot 的接口设计、分层结构真正串起来，而不是单纯堆功能。欢迎交流与指正

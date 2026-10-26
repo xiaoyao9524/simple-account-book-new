@@ -3,7 +3,7 @@ import { Form, Input, Button } from 'antd-mobile';
 import useTokenStore from '@/store/useTokenStore';
 import useUserStore from '@/store/useUserStore';
 import useCategoryStore from '@/store/useCategoryStore';
-import useQuery from '@/hooks/useQuery';
+// import useQuery from '@/hooks/useQuery';
 import { login } from '@/api/user';
 import type { LoginRequestProps } from '@/types/admin';
 import NavBar from '@/components/NavBar/NavBar';
@@ -11,7 +11,7 @@ import './style.scss';
 
 export default function Login() {
   const navigate = useNavigate();
-  const query = useQuery();
+  // const query = useQuery();
   const setToken = useTokenStore((state) => state.setToken);
   const setUserInfo = useUserStore(state => state.setUserInfo);
   const updateCategoryList = useCategoryStore(state => state.updateList);
@@ -26,7 +26,8 @@ export default function Login() {
 
       updateCategoryList();
 
-      navigate(query.redirect ? decodeURIComponent(query.redirect) : '/', { replace: true });
+      // navigate(query.redirect ? decodeURIComponent(query.redirect) : '/', { replace: true });
+      navigate('/', {replace: true});
     }
   }
 

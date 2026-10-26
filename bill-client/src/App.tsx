@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { lazy, Suspense, useEffect, useCallback } from 'react';
 import { Routes, Route } from 'react-router';
 import useSystemStore from './store/useSystemStore';
 import useTokenStore from './store/useTokenStore';
@@ -7,14 +7,15 @@ import useCategoryStore from './store/useCategoryStore';
 import type { UserVO } from '@/types/user'
 import { checkSystemInfo } from '@/utils/system'
 
-import Home from '@/pages/Home/Home';
-import Bookkeeping from '@/pages/Bookkeeping/Bookkeeping';
-import Login from '@/pages/Login/Login';
-import Register from '@/pages/Register/Register';
-import My from '@/pages/My/My';
-import CategorySetting from '@/pages/CategorySetting/CategorySetting';
-import InsertCategory from '@/pages/InsertCategory/InsertCategory';
-import DeleteCategoryAndBill from '@/pages/DeleteCategoryAndBill/DeleteCategoryAndBill';
+const Home = lazy(() => import('@/pages/Home/Home'));
+const Login = lazy(() => import('@/pages/Login/Login'));
+const Register = lazy(() => import('@/pages/Register/Register'));
+const Bookkeeping = lazy(() => import('@/pages/Bookkeeping/Bookkeeping'));
+const My = lazy(() => import('@/pages/My/My'));
+const CategorySetting = lazy(() => import('@/pages/CategorySetting/CategorySetting'));
+const InsertCategory = lazy(() => import('@/pages/InsertCategory/InsertCategory'));
+const DeleteCategoryAndBill = lazy(() => import('@/pages/DeleteCategoryAndBill/DeleteCategoryAndBill'));
+const About = lazy(() => import('@/pages/About/About'))
 
 export default function App() {
   const isMobile = useSystemStore(store => store.isMobile);
@@ -63,16 +64,19 @@ export default function App() {
   return (
     <div className={`App ${isMobile ? 'is-ios' : ''}`}>
       <section className="main-content">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/bookkeeping" element={<Bookkeeping />} />
-          <Route path="/my" element={<My />} />
-          <Route path="/categorySetting" element={<CategorySetting />} />
-          <Route path="/insertCategory" element={<InsertCategory />} />
-          <Route path="/deleteCategoryAndBill" element={<DeleteCategoryAndBill />} />
-        </Routes>
+        <Suspense fallback={<div>加载中...</div>}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/bookkeeping" element={<Bookkeeping />} />
+            <Route path="/my" element={<My />} />
+            <Route path="/categorySetting" element={<CategorySetting />} />
+            <Route path="/insertCategory" element={<InsertCategory />} />
+            <Route path="/deleteCategoryAndBill" element={<DeleteCategoryAndBill />} />
+            <Route path="/about" element={<About />} />
+          </Routes>
+        </Suspense>
       </section>
     </div>
   );

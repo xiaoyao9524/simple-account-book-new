@@ -15,4 +15,6 @@ public interface BillService {
     List<BillQueryResult>queryByCategoryId(Long categoryId);
     Boolean transferCategoryId(Long categoryId, Long newCategoryId);
     void deleteBillAndCategory (Long categoryId);
+    Long getBillDay ();
+    Long getBillCount();
 }

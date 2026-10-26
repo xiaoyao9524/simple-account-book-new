@@ -52,4 +52,12 @@
         AND u_id = #{uId}
         AND deleted_at IS NULL
     </update>
+
+    <select id="queryBillCount" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM bill_user bu
+        INNER JOIN bill b ON bu.bill_id = b.id AND b.deleted_at IS NULL
+        WHERE bu.u_id = #{uId}
+        AND bu.deleted_at IS NULL
+    </select>
 </mapper>

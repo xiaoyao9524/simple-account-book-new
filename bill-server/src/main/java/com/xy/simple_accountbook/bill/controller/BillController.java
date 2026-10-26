@@ -62,4 +62,14 @@ public class BillController {
         billService.deleteBillAndCategory(request.getCategoryId());
         return BaseResponse.success(null);
     }
+
+    @GetMapping("/bill/getBillDay")
+    public BaseResponse<Long> getBillDay () {
+        return BaseResponse.success(billService.getBillDay());
+    }
+
+    @GetMapping("/bill/getBillCount")
+    public BaseResponse<Long> getBillCount () {
+        return BaseResponse.success(billService.getBillCount());
+    }
 }

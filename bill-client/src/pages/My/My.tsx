@@ -1,12 +1,16 @@
+import { useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { List, Button, Toast } from 'antd-mobile';
 import { SetOutline ,QuestionCircleOutline} from 'antd-mobile-icons';
 import useTokenStore from '@/store/useTokenStore';
 import useUserStore from '@/store/useUserStore';
+import useSystemStore from '@/store/useSystemStore';
+import useBillCountStore from '@/store/useBillCountStore'
 import { logout } from '@/api/user';
 import NavBar from '@/components/NavBar/NavBar';
 import TabBar from '@/components/TabBar/TabBar';
 import defaultAvatar from '@/static/image/default-avatar.jpg';
+
 import './style.scss';
 
 export default function My() {
@@ -15,11 +19,12 @@ export default function My() {
   const userInfo = useUserStore(s => s.userInfo);
   const clearUserInfo = useUserStore(s => s.clearUserInfo);
 
-  async function test() {
+  const billDay = useSystemStore(s => s.billDay);
+  const updateBillDay = useSystemStore(s => s.updateBillDay)
+  const billCount = useBillCountStore(s => s.billCount);
+  const updateBillCount = useBillCountStore(s => s.updateBillCount);
 
-  }
-
-  async function handlerLogout() {
+  const handlerLogout = useCallback(async function handlerLogout() {
     const res = await logout();
     if (res) {
       Toast.show({ content: '退出成功', icon: 'success' });
@@ -27,7 +32,18 @@ export default function My() {
       clearUserInfo();
       navigate('/login', { replace: true });
     }
-  }
+  }, [clearToken, clearUserInfo, navigate]);
+
+  useEffect(() => {
+    Promise.resolve().then(updateBillDay)
+  }, [updateBillDay])
+  useEffect(() => {
+    updateBillCount();
+  }, [updateBillCount])
+
+  const toAbout = useCallback(() => {
+    navigate('/about');
+  }, [navigate])
 
   return (
     <div className="my">
@@ -50,11 +66,11 @@ export default function My() {
         <div className="account-info">
           <div className="info-item">
             <p className="info-title">记账总天数</p>
-            <p className="info-number">{99999}</p>
+            <p className="info-number">{billDay}</p>
           </div>
           <div className="info-item">
             <p className="info-title">记账总笔数</p>
-            <p className="info-number">{99999}</p>
+            <p className="info-number">{billCount}</p>
           </div>
         </div>
       </header>
@@ -66,7 +82,7 @@ export default function My() {
         >
           类别设置
         </List.Item>
-        <List.Item prefix={<QuestionCircleOutline />} onClick={test}>
+        <List.Item prefix={<QuestionCircleOutline />} onClick={toAbout}>
           关于简单记账
         </List.Item>
         <List.Item style={{ marginTop: 160 }}>

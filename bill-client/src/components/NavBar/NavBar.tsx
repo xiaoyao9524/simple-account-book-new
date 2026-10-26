@@ -15,9 +15,14 @@ export default function NavBar({ children, showBack = true, onBack, style }: Nav
       style={{ maxWidth: 400, background: 'var(--bg-card)', ...style }}
       onBack={() => {
         if (!showBack) return;
-        onBack ? onBack() : navigate(-1);
+        if(onBack) {
+          onBack()
+        } else {
+          navigate(-1)
+        }
       }}
-      backArrow={showBack}
+      back={showBack ? true : null}
+      backIcon={showBack}
     >
       {children}
     </AntdNavBar>

@@ -59,3 +59,17 @@ export const deleteBillAndCategory = (data: {categoryId: number}) => (
     data
   })
 )
+
+export const getBillDay= () => (
+  request<number>({
+    method: 'get',
+    url: '/bill/getBillDay'
+  })
+)
+
+export const getBillCount= () => (
+  request<number>({
+    method: 'get',
+    url: '/bill/getBillCount'
+  })
+)

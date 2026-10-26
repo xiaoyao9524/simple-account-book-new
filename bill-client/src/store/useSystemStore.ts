@@ -1,26 +1,34 @@
 import { create } from 'zustand';
 import type { SystemInfo } from '@/types/system'
-
+import { getBillDay } from '@/api/bill'
 
 export interface SystemStore extends SystemInfo {
   tabBarShow: boolean;
+  billDay: number;
+  updateBillDay: () => void;
   setSystemInfo: (systemInfo: SystemInfo) => void;
-  // setIsMobile: (isMobile: boolean) => void;
-  // setIsAndroid: (isAndroid: boolean) => void;
-  // setIsIOS: (isIOS: boolean) => void;
   seTabBarShow: (tabBarShow: boolean) => void;
 }
 
 const useSystemStore = create<SystemStore>((set) => ({
+  billDay: 0,
   isMobile: false,
   isAndroid: false,
   isIOS: false,
   tabBarShow: false,
   setSystemInfo: (systemInfo: SystemInfo) => set(() => ({ ...systemInfo })),
-  // setIsMobile: (isMobile: boolean) => set(() => ({ isMobile })),
-  // setIsAndroid: (isAndroid: boolean) => set(() => ({ isAndroid })),
-  // setIsIOS: (isIOS: boolean) => set(() => ({ isIOS })),
   seTabBarShow: (tabBarShow: boolean) => set(() => ({ tabBarShow })),
+  updateBillDay: async () => {
+    const res = await getBillDay();
+
+    // console.log('billDay: ', billDay, typeof billDay);
+
+    if (res && typeof res.data === 'number') {
+      set({
+        billDay: res.data
+      })
+    }
+  }
 }))
 
 export default useSystemStore;

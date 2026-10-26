@@ -3,7 +3,7 @@ import useCategoryStore from '@/store/useCategoryStore'
 import type { CategoryVO } from '@/types/category'
 import { CategoryEnableEnum } from '@/enums/categoryEnum'
 
- const useCategoryList = () => {
+const useCategoryList = () => {
   const incomeCategorys = useCategoryStore(state => state.incomeList);
   const expendCategorys = useCategoryStore(state => state.expendList);
 

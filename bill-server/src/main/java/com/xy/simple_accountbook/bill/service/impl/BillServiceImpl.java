@@ -5,23 +5,20 @@ import com.xy.simple_accountbook.bill.common.enums.CategoryEnableEnum;
 import com.xy.simple_accountbook.bill.common.enums.ResponseCodeEnum;
 import com.xy.simple_accountbook.bill.dto.request.bill.InsertBillRequest;
 import com.xy.simple_accountbook.bill.dto.request.bill.UpdateBillRequest;
-import com.xy.simple_accountbook.bill.entity.BillEntity;
-import com.xy.simple_accountbook.bill.entity.BillUserEntity;
-import com.xy.simple_accountbook.bill.entity.CategoryEntity;
-import com.xy.simple_accountbook.bill.entity.UserCategoryEntity;
+import com.xy.simple_accountbook.bill.entity.*;
 import com.xy.simple_accountbook.bill.exception.BusinessException;
-import com.xy.simple_accountbook.bill.mapper.BillMapper;
-import com.xy.simple_accountbook.bill.mapper.BillUserMapper;
-import com.xy.simple_accountbook.bill.mapper.CategoryMapper;
-import com.xy.simple_accountbook.bill.mapper.UserCategoryMapper;
+import com.xy.simple_accountbook.bill.mapper.*;
 import com.xy.simple_accountbook.bill.mapper.result.BillQueryResult;
 import com.xy.simple_accountbook.bill.service.BillService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,6 +31,7 @@ public class BillServiceImpl implements BillService {
     private final BillUserMapper billUserMapper;
     private final CategoryMapper categoryMapper;
     private final UserCategoryMapper userCategoryMapper;
+    private final UserMapper userMapper;
 
     @Override
     public List<BillQueryResult> queryByDateAndUid(YearMonth yearMonth) {
@@ -247,5 +245,34 @@ public class BillServiceImpl implements BillService {
         }
 
         userCategoryMapper.batchUpdateEnable(List.of(delUserCategoryEntity.getId()), CategoryEnableEnum.DISABLED,  uId);
+    }
+
+    @Override
+    public Long getBillDay () {
+        Long uId = UserContext.getUserId();
+        UserEntity userEntity = userMapper.findByUId(uId);
+
+        if (userEntity == null) {
+            throw new BusinessException(ResponseCodeEnum.BUSINESS_ERROR, "该用户不存在");
+        }
+
+        LocalDateTime createTime = userEntity.getCreateTime();
+        LocalDate createDate = createTime.toLocalDate();
+        LocalDate today = LocalDate.now();
+
+        return ChronoUnit.DAYS.between(createDate, today);
+    }
+
+    @Override
+    public Long getBillCount() {
+        Long uId = UserContext.getUserId();
+
+        UserEntity userEntity = userMapper.findByUId(uId);
+
+        if (userEntity == null) {
+            throw new BusinessException(ResponseCodeEnum.BUSINESS_ERROR, "该用户不存在");
+        }
+
+        return billUserMapper.queryBillCount(uId);
     }
 }
